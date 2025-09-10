@@ -38,15 +38,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const signInWithGoogle = async () => {
-    const { error } = await supabase.auth.signInWithOAuth({
+    const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${window.location.origin}/onboarding`
+        redirectTo: `${window.location.origin}/onboarding`,
+        skipBrowserRedirect: true,
       }
     });
-    
+
     if (error) {
       throw error;
+    }
+
+    if (data?.url) {
+      try {
+        // Escape the Lovable preview iframe to avoid Google blocking in iframes
+        // Assigning to top is allowed for navigation even if cross-origin
+        window.top!.location.href = data.url;
+      } catch {
+        // Fallback to current window
+        window.location.href = data.url;
+      }
     }
   };
 
