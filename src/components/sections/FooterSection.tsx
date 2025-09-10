@@ -21,7 +21,7 @@ export function FooterSection() {
               <img 
                 src="/lovable-uploads/65117502-c5fc-4d37-bc15-b1f5f625b12e.png" 
                 alt="Black Knight AI" 
-                className="h-8 w-auto brightness-0 invert"
+                className="h-12 w-auto brightness-0 invert"
               />
             </div>
             <p className="text-white/80 mb-6 leading-relaxed">
