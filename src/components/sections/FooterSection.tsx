@@ -18,7 +18,7 @@ export function FooterSection() {
           {/* Company Info */}
           <div className="lg:col-span-1">
             <div className="mb-6">
-              <span className="text-2xl font-bold text-accent">AI Toolkit</span>
+              <span className="text-2xl font-bold text-accent">Black Knight AI</span>
             </div>
             <p className="text-white/80 mb-6 leading-relaxed">
               Empowering executives to discover, learn, and implement AI productivity 
@@ -86,7 +86,7 @@ export function FooterSection() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="flex items-center">
               <Mail className="mr-3 h-5 w-5 text-accent" />
-              <span className="text-white/80">hello@aitoolkit.com</span>
+              <span className="text-white/80">hello@blackknightai.com</span>
             </div>
             <div className="flex items-center">
               <Phone className="mr-3 h-5 w-5 text-accent" />
@@ -102,7 +102,7 @@ export function FooterSection() {
         {/* Bottom Bar */}
         <div className="border-t border-white/20 pt-8 flex flex-col md:flex-row justify-between items-center">
           <div className="text-white/60 text-sm mb-4 md:mb-0">
-            © 2024 AI Toolkit. All rights reserved.
+            © 2024 Black Knight AI. All rights reserved.
           </div>
           <div className="flex space-x-6 text-sm">
             <a href="#" className="text-white/60 hover:text-accent transition-smooth">Privacy Policy</a>

@@ -12,7 +12,7 @@ export function Header() {
           {/* Logo */}
           <div className="flex items-center">
             <div className="bg-gradient-primary bg-clip-text text-transparent">
-              <span className="text-2xl font-bold">AI Toolkit</span>
+              <span className="text-2xl font-bold">Black Knight AI</span>
             </div>
           </div>
 
