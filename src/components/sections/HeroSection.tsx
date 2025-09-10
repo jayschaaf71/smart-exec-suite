@@ -32,8 +32,8 @@ export function HeroSection() {
 
           {/* Subheadline */}
           <p className="text-xl lg:text-2xl text-white/90 mb-8 max-w-3xl mx-auto leading-relaxed">
-            Discover, learn, and implement the perfect AI tools for your business. 
-            Get personalized recommendations and step-by-step guidance from industry experts.
+            Transforming you and your business with AI productivity solutions. 
+            Discover, learn, and implement the perfect AI tools with personalized recommendations and step-by-step guidance from industry experts.
           </p>
 
           {/* Social Proof Stats */}
