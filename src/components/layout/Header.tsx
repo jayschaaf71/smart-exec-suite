@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
-import { LogIn, UserPlus, Menu, LogOut } from 'lucide-react';
+import { LogIn, UserPlus, Menu, LogOut, LayoutDashboard } from 'lucide-react';
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -59,8 +59,16 @@ export function Header() {
           <div className="hidden md:flex items-center space-x-4">
             {user ? (
               <>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => navigate('/dashboard')}
+                >
+                  <LayoutDashboard className="mr-2 h-4 w-4" />
+                  Dashboard
+                </Button>
                 <span className="text-muted-foreground text-sm">
-                  Welcome, {user.user_metadata?.full_name || user.email}
+                  {user.user_metadata?.full_name || user.email}
                 </span>
                 <Button 
                   variant="ghost" 
@@ -133,8 +141,16 @@ export function Header() {
               <div className="flex flex-col space-y-2 pt-4">
                 {user ? (
                   <>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => navigate('/dashboard')}
+                    >
+                      <LayoutDashboard className="mr-2 h-4 w-4" />
+                      Dashboard
+                    </Button>
                     <div className="text-muted-foreground text-sm px-2">
-                      Welcome, {user.user_metadata?.full_name || user.email}
+                      {user.user_metadata?.full_name || user.email}
                     </div>
                     <Button 
                       variant="ghost" 

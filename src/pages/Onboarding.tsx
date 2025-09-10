@@ -119,7 +119,7 @@ export default function Onboarding() {
       });
 
       // Navigate to dashboard (create this later)
-      navigate('/');
+      navigate('/dashboard');
     } catch (error: any) {
       toast({
         title: "Error",
