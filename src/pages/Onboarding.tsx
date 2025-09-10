@@ -3,12 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { Input } from "@/components/ui/input";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowRight, ArrowLeft, Check } from "lucide-react";
 
 interface OnboardingData {
+  displayName: string;
   role: string;
   industry: string;
   companySize: string;
@@ -55,6 +57,7 @@ export default function Onboarding() {
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<OnboardingData>({
+    displayName: "",
     role: "",
     industry: "",
     companySize: "",
@@ -66,7 +69,7 @@ export default function Onboarding() {
   const { user } = useAuth();
   const { toast } = useToast();
 
-  const totalSteps = 5;
+  const totalSteps = 6;
 
   const handleNext = () => {
     if (step < totalSteps) {
@@ -97,6 +100,7 @@ export default function Onboarding() {
       const { error } = await supabase
         .from('profiles')
         .update({
+          display_name: data.displayName,
           role: data.role,
           industry: data.industry,
           company_size: data.companySize,
@@ -129,33 +133,36 @@ export default function Onboarding() {
 
   const isStepValid = () => {
     switch (step) {
-      case 1: return data.role !== "";
-      case 2: return data.industry !== "";
-      case 3: return data.companySize !== "";
-      case 4: return data.aiExperience !== "";
-      case 5: return data.goals.length > 0;
+      case 1: return data.displayName.trim() !== "";
+      case 2: return data.role !== "";
+      case 3: return data.industry !== "";
+      case 4: return data.companySize !== "";
+      case 5: return data.aiExperience !== "";
+      case 6: return data.goals.length > 0;
       default: return false;
     }
   };
 
   const getStepTitle = () => {
     switch (step) {
-      case 1: return "What's your role?";
-      case 2: return "What industry are you in?";
-      case 3: return "What's your company size?";
-      case 4: return "What's your AI experience?";
-      case 5: return "What are your goals?";
+      case 1: return "What should we call you?";
+      case 2: return "What's your role?";
+      case 3: return "What industry are you in?";
+      case 4: return "What's your company size?";
+      case 5: return "What's your AI experience?";
+      case 6: return "What are your goals?";
       default: return "";
     }
   };
 
   const getStepDescription = () => {
     switch (step) {
-      case 1: return "Help us understand your position and responsibilities.";
-      case 2: return "This helps us recommend relevant AI tools for your sector.";
-      case 3: return "Company size affects which tools and strategies work best.";
-      case 4: return "We'll tailor recommendations to your current knowledge level.";
-      case 5: return "Select all that apply to personalize your AI toolkit.";
+      case 1: return "Enter your preferred name so we can personalize your experience.";
+      case 2: return "Help us understand your position and responsibilities.";
+      case 3: return "This helps us recommend relevant AI tools for your sector.";
+      case 4: return "Company size affects which tools and strategies work best.";
+      case 5: return "We'll tailor recommendations to your current knowledge level.";
+      case 6: return "Select all that apply to personalize your AI toolkit.";
       default: return "";
     }
   };
@@ -198,9 +205,25 @@ export default function Onboarding() {
             </CardDescription>
           </CardHeader>
           
-          <CardContent className="space-y-6">
-            {/* Step 1: Role Selection */}
+           <CardContent className="space-y-6">
+            {/* Step 1: Display Name */}
             {step === 1 && (
+              <div className="space-y-4">
+                <Input
+                  placeholder="Enter your preferred name..."
+                  value={data.displayName}
+                  onChange={(e) => setData(prev => ({ ...prev, displayName: e.target.value }))}
+                  className="text-lg h-12"
+                  autoFocus
+                />
+                <p className="text-gray-500 text-sm text-center">
+                  This is how we'll address you throughout the platform
+                </p>
+              </div>
+            )}
+
+            {/* Step 2: Role Selection */}
+            {step === 2 && (
               <div className="grid gap-4">
                 {roles.map((role) => (
                   <Card
@@ -228,8 +251,8 @@ export default function Onboarding() {
               </div>
             )}
 
-            {/* Step 2: Industry Selection */}
-            {step === 2 && (
+            {/* Step 3: Industry Selection */}
+            {step === 3 && (
               <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                 {industries.map((industry) => (
                   <Button
@@ -244,8 +267,8 @@ export default function Onboarding() {
               </div>
             )}
 
-            {/* Step 3: Company Size */}
-            {step === 3 && (
+            {/* Step 4: Company Size */}
+            {step === 4 && (
               <div className="grid gap-3">
                 {companySizes.map((size) => (
                   <Button
@@ -260,8 +283,8 @@ export default function Onboarding() {
               </div>
             )}
 
-            {/* Step 4: AI Experience */}
-            {step === 4 && (
+            {/* Step 5: AI Experience */}
+            {step === 5 && (
               <div className="grid gap-4">
                 {aiExperienceLevels.map((level) => (
                   <Card
@@ -289,8 +312,8 @@ export default function Onboarding() {
               </div>
             )}
 
-            {/* Step 5: Goals Selection */}
-            {step === 5 && (
+            {/* Step 6: Goals Selection */}
+            {step === 6 && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {goals.map((goal) => (
                   <Button
