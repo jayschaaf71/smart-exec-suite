@@ -51,12 +51,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
 
     if (data?.url) {
+      // Attempt to escape the preview iframe first
       try {
-        // Escape the Lovable preview iframe to avoid Google blocking in iframes
-        // Assigning to top is allowed for navigation even if cross-origin
-        window.top!.location.href = data.url;
+        if (window.top && window.top !== window) {
+          window.top.location.href = data.url;
+          return;
+        }
       } catch {
-        // Fallback to current window
+        // ignore and fallback below
+      }
+
+      // Open in a new tab as a reliable fallback in sandboxed iframes
+      const opened = window.open(data.url, '_blank', 'noopener,noreferrer');
+      if (!opened) {
+        // Last resort: navigate current frame (may be blocked by Google)
         window.location.href = data.url;
       }
     }
