@@ -1,7 +1,11 @@
+import { useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
+import { useAuth } from '@/hooks/useAuth';
 import { ArrowRight, CheckCircle, Users, Zap, TrendingUp } from "lucide-react";
 
 export function HeroSection() {
+  const navigate = useNavigate();
+  const { user } = useAuth();
   return (
     <section className="relative overflow-hidden bg-gradient-hero">
       {/* Background Elements */}
@@ -50,8 +54,13 @@ export function HeroSection() {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Button variant="hero" size="xl" className="min-w-[200px]">
-              Start Free Assessment
+            <Button 
+              variant="hero" 
+              size="xl" 
+              className="min-w-[200px]"
+              onClick={() => navigate(user ? '/onboarding' : '/auth')}
+            >
+              {user ? 'Continue Assessment' : 'Start Free Assessment'}
               <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
             <Button variant="premium" size="xl" className="min-w-[200px]">

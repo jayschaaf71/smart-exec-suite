@@ -1,9 +1,18 @@
-import { Button } from "@/components/ui/button";
-import { LogIn, UserPlus, Menu } from "lucide-react";
-import { useState } from "react";
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import { useAuth } from '@/hooks/useAuth';
+import { LogIn, UserPlus, Menu, LogOut } from 'lucide-react';
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navigate = useNavigate();
+  const { user, signOut } = useAuth();
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/');
+  };
 
   return (
     <header className="bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 w-full border-b border-border/40">
@@ -48,14 +57,40 @@ export function Header() {
 
           {/* Desktop Auth Buttons */}
           <div className="hidden md:flex items-center space-x-4">
-            <Button variant="ghost" size="sm">
-              <LogIn className="mr-2 h-4 w-4" />
-              Sign In
-            </Button>
-            <Button variant="cta" size="sm">
-              <UserPlus className="mr-2 h-4 w-4" />
-              Get Started
-            </Button>
+            {user ? (
+              <>
+                <span className="text-muted-foreground text-sm">
+                  Welcome, {user.user_metadata?.full_name || user.email}
+                </span>
+                <Button 
+                  variant="ghost" 
+                  size="sm"
+                  onClick={handleSignOut}
+                >
+                  <LogOut className="mr-2 h-4 w-4" />
+                  Sign Out
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button 
+                  variant="ghost" 
+                  size="sm"
+                  onClick={() => navigate('/auth')}
+                >
+                  <LogIn className="mr-2 h-4 w-4" />
+                  Sign In
+                </Button>
+                <Button 
+                  variant="cta" 
+                  size="sm"
+                  onClick={() => navigate('/auth')}
+                >
+                  <UserPlus className="mr-2 h-4 w-4" />
+                  Get Started
+                </Button>
+              </>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -96,14 +131,40 @@ export function Header() {
                 About
               </a>
               <div className="flex flex-col space-y-2 pt-4">
-                <Button variant="ghost" size="sm">
-                  <LogIn className="mr-2 h-4 w-4" />
-                  Sign In
-                </Button>
-                <Button variant="cta" size="sm">
-                  <UserPlus className="mr-2 h-4 w-4" />
-                  Get Started
-                </Button>
+                {user ? (
+                  <>
+                    <div className="text-muted-foreground text-sm px-2">
+                      Welcome, {user.user_metadata?.full_name || user.email}
+                    </div>
+                    <Button 
+                      variant="ghost" 
+                      size="sm"
+                      onClick={handleSignOut}
+                    >
+                      <LogOut className="mr-2 h-4 w-4" />
+                      Sign Out
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button 
+                      variant="ghost" 
+                      size="sm"
+                      onClick={() => navigate('/auth')}
+                    >
+                      <LogIn className="mr-2 h-4 w-4" />
+                      Sign In
+                    </Button>
+                    <Button 
+                      variant="cta" 
+                      size="sm"
+                      onClick={() => navigate('/auth')}
+                    >
+                      <UserPlus className="mr-2 h-4 w-4" />
+                      Get Started
+                    </Button>
+                  </>
+                )}
               </div>
             </nav>
           </div>
