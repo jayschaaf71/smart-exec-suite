@@ -11,9 +11,11 @@ export function Header() {
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
           <div className="flex items-center">
-            <div className="bg-gradient-primary bg-clip-text text-transparent">
-              <span className="text-2xl font-bold">Black Knight AI</span>
-            </div>
+            <img 
+              src="/lovable-uploads/65117502-c5fc-4d37-bc15-b1f5f625b12e.png" 
+              alt="Black Knight AI" 
+              className="h-8 w-auto"
+            />
           </div>
 
           {/* Desktop Navigation */}

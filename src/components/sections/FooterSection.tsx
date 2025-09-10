@@ -18,7 +18,11 @@ export function FooterSection() {
           {/* Company Info */}
           <div className="lg:col-span-1">
             <div className="mb-6">
-              <span className="text-2xl font-bold text-accent">Black Knight AI</span>
+              <img 
+                src="/lovable-uploads/65117502-c5fc-4d37-bc15-b1f5f625b12e.png" 
+                alt="Black Knight AI" 
+                className="h-8 w-auto brightness-0 invert"
+              />
             </div>
             <p className="text-white/80 mb-6 leading-relaxed">
               Empowering executives to discover, learn, and implement AI productivity 
