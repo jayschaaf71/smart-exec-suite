@@ -15,6 +15,8 @@ import { ImplementationGuides } from '@/components/implementation/Implementation
 import { ProgressTracking } from '@/components/dashboard/ProgressTracking';
 import { LearningAcademy } from '@/components/learning/LearningAcademy';
 import AnalyticsDashboard from '@/components/analytics/AnalyticsDashboard';
+import { NotificationPreferences } from '@/components/notifications/NotificationPreferences';
+import { IntegrationExport } from '@/components/integration/IntegrationExport';
 import { Analytics } from '@/utils/analytics';
 import { 
   Star, 
@@ -31,7 +33,6 @@ import {
   Users
 } from 'lucide-react';
 import { NotificationCenter } from '@/components/notifications/NotificationCenter';
-import { NotificationPreferences } from '@/components/notifications/NotificationPreferences';
 
 interface UserProfile {
   display_name: string;
@@ -204,7 +205,10 @@ export default function Dashboard() {
                 </div>
               </CardContent>
             </Card>
-            
+                  
+                  <TabsContent value="integrations" className="space-y-6">
+                    <IntegrationExport />
+                  </TabsContent>
             <Card>
               <CardContent className="p-6">
                 <div className="flex items-center">
@@ -244,13 +248,14 @@ export default function Dashboard() {
 
           {/* Main Tabs */}
           <Tabs defaultValue="recommendations" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-8">
+            <TabsList className="grid w-full grid-cols-4 lg:grid-cols-9">
               <TabsTrigger value="recommendations">Tools</TabsTrigger>
               <TabsTrigger value="quickwins">Quick Wins</TabsTrigger>
               <TabsTrigger value="guides">Guides</TabsTrigger>
               <TabsTrigger value="learning">Learning</TabsTrigger>
               <TabsTrigger value="progress">Progress</TabsTrigger>
               <TabsTrigger value="analytics">Analytics</TabsTrigger>
+              <TabsTrigger value="integrations">Export</TabsTrigger>
               <TabsTrigger value="notifications">Notifications</TabsTrigger>
               <TabsTrigger value="profile">Profile</TabsTrigger>
             </TabsList>
@@ -277,6 +282,10 @@ export default function Dashboard() {
             
             <TabsContent value="analytics">
               <AnalyticsDashboard />
+            </TabsContent>
+            
+            <TabsContent value="integrations">
+              <IntegrationExport />
             </TabsContent>
             
             <TabsContent value="notifications">
