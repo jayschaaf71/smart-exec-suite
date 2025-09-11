@@ -1,0 +1,35 @@
+-- Create categories if they don't exist
+INSERT INTO public.categories (name, description, icon, color) VALUES 
+('Content & Writing', 'AI tools for content creation, writing assistance, and copywriting', 'PenTool', '#8B5CF6'),
+('Design & Creative', 'AI-powered design, image generation, and creative tools', 'Palette', '#EC4899'),
+('Automation', 'Workflow automation and process optimization tools', 'Zap', '#F59E0B'),
+('Productivity', 'AI tools for productivity, organization, and task management', 'Clock', '#10B981'),
+('Project Management', 'AI-enhanced project planning and team collaboration', 'Briefcase', '#3B82F6'),
+('Communication', 'AI-powered communication and collaboration tools', 'MessageCircle', '#06B6D4'),
+('Sales & CRM', 'AI tools for sales, customer relationship management', 'DollarSign', '#EF4444'),
+('Analytics & Data', 'AI-powered analytics, reporting, and data insights', 'BarChart', '#8B5CF6'),
+('Customer Support', 'AI chatbots and customer service automation', 'Headphones', '#F59E0B'),
+('HR & Recruitment', 'AI tools for human resources and talent acquisition', 'Users', '#10B981')
+ON CONFLICT (name) DO NOTHING;
+
+-- Populate tools table with essential AI tools for immediate functionality
+INSERT INTO public.tools (name, description, category_id, pricing_model, pricing_amount, setup_difficulty, time_to_value, target_roles, target_industries, features, pros, cons, website_url, user_rating, expert_rating, popularity_score, status) VALUES 
+('ChatGPT', 'Advanced conversational AI for content creation, analysis, and automation', (SELECT id FROM categories WHERE name = 'Content & Writing' LIMIT 1), 'freemium', 20, 'easy', '1 day', ARRAY['Marketing Manager', 'Content Creator', 'CEO', 'Operations Manager'], ARRAY['Technology', 'Marketing', 'Consulting', 'E-commerce'], ARRAY['Text generation', 'Code assistance', 'Analysis', 'Translation'], ARRAY['Easy to use', 'Versatile', 'Regular updates'], ARRAY['Usage limits', 'Requires internet'], 'https://openai.com/chatgpt', 4.5, 4.7, 95, 'active'),
+
+('Midjourney', 'AI-powered image generation for creative and marketing content', (SELECT id FROM categories WHERE name = 'Design & Creative' LIMIT 1), 'paid', 10, 'easy', '1 hour', ARRAY['Marketing Manager', 'Content Creator', 'Graphic Designer'], ARRAY['Marketing', 'Design', 'Media', 'E-commerce'], ARRAY['Image generation', 'Style variations', 'High quality output'], ARRAY['Outstanding quality', 'Creative flexibility', 'Easy prompting'], ARRAY['Discord-only interface', 'Limited free usage'], 'https://midjourney.com', 4.6, 4.8, 88, 'active'),
+
+('Zapier', 'Workflow automation connecting 6,000+ apps without coding', (SELECT id FROM categories WHERE name = 'Automation' LIMIT 1), 'freemium', 19.99, 'medium', '3 days', ARRAY['Operations Manager', 'CEO', 'CTO', 'Administrative Assistant'], ARRAY['Technology', 'E-commerce', 'Consulting', 'Healthcare'], ARRAY['App integration', 'Workflow automation', 'Triggers and actions'], ARRAY['Extensive integrations', 'No coding required', 'Reliable'], ARRAY['Learning curve', 'Can get expensive'], 'https://zapier.com', 4.3, 4.5, 82, 'active'),
+
+('Notion AI', 'AI-powered workspace for notes, docs, and project management', (SELECT id FROM categories WHERE name = 'Productivity' LIMIT 1), 'freemium', 8, 'easy', '1 day', ARRAY['Project Manager', 'CEO', 'Operations Manager'], ARRAY['Technology', 'Consulting', 'Education'], ARRAY['Document AI', 'Content generation', 'Organization'], ARRAY['Integrated workspace', 'Collaborative', 'Versatile'], ARRAY['Can be overwhelming', 'Learning curve for advanced features'], 'https://notion.so', 4.4, 4.6, 79, 'active'),
+
+('Grammarly', 'AI writing assistant for grammar, tone, and clarity improvement', (SELECT id FROM categories WHERE name = 'Content & Writing' LIMIT 1), 'freemium', 12, 'easy', '1 hour', ARRAY['Marketing Manager', 'Content Creator', 'Administrative Assistant'], ARRAY['Marketing', 'Education', 'Consulting'], ARRAY['Grammar checking', 'Tone detection', 'Plagiarism detection'], ARRAY['Real-time suggestions', 'Multiple integrations', 'Easy to use'], ARRAY['Limited free version', 'Can be overly aggressive'], 'https://grammarly.com', 4.2, 4.4, 76, 'active'),
+
+('Monday.com AI', 'Project management with AI-powered insights and automation', (SELECT id FROM categories WHERE name = 'Project Management' LIMIT 1), 'paid', 8, 'medium', '1 week', ARRAY['Project Manager', 'Operations Manager', 'CEO'], ARRAY['Technology', 'Consulting', 'Manufacturing'], ARRAY['Project insights', 'Automated workflows', 'Resource optimization'], ARRAY['Intuitive interface', 'Customizable', 'Good integrations'], ARRAY['Can be expensive', 'Overwhelming for small teams'], 'https://monday.com', 4.3, 4.5, 73, 'active'),
+
+('Calendly AI', 'Intelligent scheduling with automated booking and preferences', (SELECT id FROM categories WHERE name = 'Communication' LIMIT 1), 'freemium', 8, 'easy', '1 hour', ARRAY['Sales Manager', 'CEO', 'Administrative Assistant'], ARRAY['Consulting', 'Healthcare', 'Education'], ARRAY['Smart scheduling', 'Calendar integration', 'Automated reminders'], ARRAY['Saves time', 'Professional appearance', 'Easy setup'], ARRAY['Limited customization in free plan', 'Integration limitations'], 'https://calendly.com', 4.1, 4.3, 71, 'active'),
+
+('Slack AI', 'Team communication with AI-powered summaries and search', (SELECT id FROM categories WHERE name = 'Communication' LIMIT 1), 'freemium', 7.25, 'easy', '2 days', ARRAY['Operations Manager', 'Project Manager', 'CTO'], ARRAY['Technology', 'Consulting', 'Remote Work'], ARRAY['Message summarization', 'Smart search', 'Channel insights'], ARRAY['Enhances team communication', 'Integrates well', 'User-friendly'], ARRAY['Can create notification overload', 'Premium features expensive'], 'https://slack.com', 4.0, 4.2, 68, 'active'),
+
+('Canva AI', 'Design platform with AI-powered content generation and editing', (SELECT id FROM categories WHERE name = 'Design & Creative' LIMIT 1), 'freemium', 12.99, 'easy', '1 hour', ARRAY['Marketing Manager', 'Content Creator', 'Administrative Assistant'], ARRAY['Marketing', 'E-commerce', 'Education'], ARRAY['AI design generation', 'Template library', 'Brand kit management'], ARRAY['User-friendly', 'Professional results', 'Extensive templates'], ARRAY['Limited advanced features', 'Internet dependent'], 'https://canva.com', 4.4, 4.5, 85, 'active'),
+
+('HubSpot AI', 'CRM and marketing automation with AI-powered insights', (SELECT id FROM categories WHERE name = 'Sales & CRM' LIMIT 1), 'freemium', 45, 'medium', '1 week', ARRAY['Sales Manager', 'Marketing Manager', 'CEO'], ARRAY['Technology', 'E-commerce', 'Consulting'], ARRAY['Lead scoring', 'Content optimization', 'Sales insights'], ARRAY['Comprehensive platform', 'Good integrations', 'Strong support'], ARRAY['Steep learning curve', 'Can be expensive'], 'https://hubspot.com', 4.2, 4.4, 77, 'active');
