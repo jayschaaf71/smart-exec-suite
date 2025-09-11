@@ -10,6 +10,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { RecommendedTools } from '@/components/dashboard/RecommendedTools';
+import { QuickWins } from '@/components/dashboard/QuickWins';
 import { 
   Star, 
   TrendingUp, 
@@ -59,7 +60,7 @@ export default function Dashboard() {
         .from('profiles')
         .select('*')
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
 
       if (error) throw error;
       
@@ -233,14 +234,19 @@ export default function Dashboard() {
 
           {/* Main Tabs */}
           <Tabs defaultValue="recommendations" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-3">
+            <TabsList className="grid w-full grid-cols-4">
               <TabsTrigger value="recommendations">Recommended Tools</TabsTrigger>
+              <TabsTrigger value="quickwins">Quick Wins</TabsTrigger>
               <TabsTrigger value="goals">Your Goals</TabsTrigger>
               <TabsTrigger value="profile">Profile</TabsTrigger>
             </TabsList>
             
             <TabsContent value="recommendations">
               <RecommendedTools />
+            </TabsContent>
+            
+            <TabsContent value="quickwins">
+              <QuickWins />
             </TabsContent>
             
             <TabsContent value="goals" className="space-y-6">
