@@ -55,6 +55,62 @@ export type Database = {
           },
         ]
       }
+      implementation_guides: {
+        Row: {
+          created_at: string
+          description: string | null
+          difficulty_level: string | null
+          estimated_time: string | null
+          id: string
+          prerequisites: string[] | null
+          steps: Json
+          success_metrics: string[] | null
+          target_roles: string[] | null
+          title: string
+          tool_id: string | null
+          troubleshooting: Json | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          difficulty_level?: string | null
+          estimated_time?: string | null
+          id?: string
+          prerequisites?: string[] | null
+          steps: Json
+          success_metrics?: string[] | null
+          target_roles?: string[] | null
+          title: string
+          tool_id?: string | null
+          troubleshooting?: Json | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          difficulty_level?: string | null
+          estimated_time?: string | null
+          id?: string
+          prerequisites?: string[] | null
+          steps?: Json
+          success_metrics?: string[] | null
+          target_roles?: string[] | null
+          title?: string
+          tool_id?: string | null
+          troubleshooting?: Json | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "implementation_guides_tool_id_fkey"
+            columns: ["tool_id"]
+            isOneToOne: false
+            referencedRelation: "tools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           ai_experience: string | null
@@ -235,6 +291,59 @@ export type Database = {
             columns: ["category_id"]
             isOneToOne: false
             referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_implementation_progress: {
+        Row: {
+          completed_at: string | null
+          completed_steps: number[] | null
+          created_at: string
+          current_step: number | null
+          guide_id: string | null
+          id: string
+          notes: string | null
+          started_at: string | null
+          status: string | null
+          time_spent_minutes: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          completed_steps?: number[] | null
+          created_at?: string
+          current_step?: number | null
+          guide_id?: string | null
+          id?: string
+          notes?: string | null
+          started_at?: string | null
+          status?: string | null
+          time_spent_minutes?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          completed_steps?: number[] | null
+          created_at?: string
+          current_step?: number | null
+          guide_id?: string | null
+          id?: string
+          notes?: string | null
+          started_at?: string | null
+          status?: string | null
+          time_spent_minutes?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_implementation_progress_guide_id_fkey"
+            columns: ["guide_id"]
+            isOneToOne: false
+            referencedRelation: "implementation_guides"
             referencedColumns: ["id"]
           },
         ]
