@@ -7,6 +7,10 @@ interface AuthContextType {
   session: Session | null;
   loading: boolean;
   signInWithGoogle: () => Promise<void>;
+  signInWithEmail: (email: string, password: string) => Promise<void>;
+  signUpWithEmail: (email: string, password: string, fullName: string) => Promise<void>;
+  resetPassword: (email: string) => Promise<void>;
+  updateProfile: (updates: { display_name?: string; avatar_url?: string }) => Promise<void>;
   signOut: () => Promise<void>;
 }
 
@@ -70,6 +74,64 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const signInWithEmail = async (email: string, password: string) => {
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) {
+      throw error;
+    }
+  };
+
+  const signUpWithEmail = async (email: string, password: string, fullName: string) => {
+    const redirectUrl = `${window.location.origin}/onboarding`;
+    
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: redirectUrl,
+        data: {
+          full_name: fullName,
+          display_name: fullName,
+        }
+      }
+    });
+
+    if (error) {
+      throw error;
+    }
+  };
+
+  const resetPassword = async (email: string) => {
+    const redirectUrl = `${window.location.origin}/auth`;
+    
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: redirectUrl,
+    });
+
+    if (error) {
+      throw error;
+    }
+  };
+
+  const updateProfile = async (updates: { display_name?: string; avatar_url?: string }) => {
+    if (!user) {
+      throw new Error('No user logged in');
+    }
+
+    const { error } = await supabase
+      .from('profiles')
+      .update(updates)
+      .eq('user_id', user.id);
+
+    if (error) {
+      throw error;
+    }
+  };
+
   const signOut = async () => {
     const { error } = await supabase.auth.signOut();
     if (error) {
@@ -83,6 +145,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       session,
       loading,
       signInWithGoogle,
+      signInWithEmail,
+      signUpWithEmail,
+      resetPassword,
+      updateProfile,
       signOut
     }}>
       {children}
