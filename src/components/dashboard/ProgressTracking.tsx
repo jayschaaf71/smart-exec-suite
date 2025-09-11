@@ -19,6 +19,8 @@ import {
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
+import { GamificationManager } from '@/utils/gamification';
+import { GamificationDashboard } from '@/components/gamification/GamificationDashboard';
 
 interface Achievement {
   id: string;
@@ -55,8 +57,19 @@ export function ProgressTracking() {
   useEffect(() => {
     if (user) {
       loadProgressData();
+      initializeGamification();
     }
   }, [user]);
+
+  const initializeGamification = async () => {
+    if (!user) return;
+    
+    // Initialize user stats if they don't exist
+    await GamificationManager.initializeUserStats(user.id);
+    
+    // Update streak for daily engagement
+    await GamificationManager.updateStreak(user.id);
+  };
 
   const loadProgressData = async () => {
     if (!user) return;
@@ -459,6 +472,9 @@ export function ProgressTracking() {
           </div>
         </CardContent>
       </Card>
+      
+      {/* Add Gamification Dashboard */}
+      <GamificationDashboard />
     </div>
   );
 }

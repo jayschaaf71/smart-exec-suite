@@ -248,6 +248,42 @@ export type Database = {
         }
         Relationships: []
       }
+      levels: {
+        Row: {
+          color: string | null
+          created_at: string
+          description: string | null
+          icon: string | null
+          id: string
+          level_number: number
+          points_required: number
+          rewards: Json | null
+          title: string
+        }
+        Insert: {
+          color?: string | null
+          created_at?: string
+          description?: string | null
+          icon?: string | null
+          id?: string
+          level_number: number
+          points_required: number
+          rewards?: Json | null
+          title: string
+        }
+        Update: {
+          color?: string | null
+          created_at?: string
+          description?: string | null
+          icon?: string | null
+          id?: string
+          level_number?: number
+          points_required?: number
+          rewards?: Json | null
+          title?: string
+        }
+        Relationships: []
+      }
       notification_preferences: {
         Row: {
           created_at: string

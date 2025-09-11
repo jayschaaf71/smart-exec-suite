@@ -75,6 +75,24 @@ export class Analytics {
     });
   }
 
+  static async trackAchievementEarned(achievementId: string, achievementName: string, points: number) {
+    await this.track('achievement_earned', {
+      achievement_id: achievementId,
+      achievement_name: achievementName,
+      points_earned: points,
+      timestamp: new Date().toISOString(),
+    });
+  }
+
+  static async trackLevelUp(newLevel: number, levelTitle: string, totalPoints: number) {
+    await this.track('level_up', {
+      new_level: newLevel,
+      level_title: levelTitle,
+      total_points: totalPoints,
+      timestamp: new Date().toISOString(),
+    });
+  }
+
   static async getAnalyticsSummary(userId: string) {
     try {
       const { data, error } = await supabase
