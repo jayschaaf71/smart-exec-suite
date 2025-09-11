@@ -14,6 +14,8 @@ import { QuickWins } from '@/components/dashboard/QuickWins';
 import { ImplementationGuides } from '@/components/implementation/ImplementationGuides';
 import { ProgressTracking } from '@/components/dashboard/ProgressTracking';
 import { LearningAcademy } from '@/components/learning/LearningAcademy';
+import AnalyticsDashboard from '@/components/analytics/AnalyticsDashboard';
+import { Analytics } from '@/utils/analytics';
 import { 
   Star, 
   TrendingUp, 
@@ -52,6 +54,7 @@ export default function Dashboard() {
   useEffect(() => {
     if (user) {
       fetchProfile();
+      Analytics.init(user.id);
     }
   }, [user]);
 
@@ -237,12 +240,13 @@ export default function Dashboard() {
 
           {/* Main Tabs */}
           <Tabs defaultValue="recommendations" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-6">
+            <TabsList className="grid w-full grid-cols-7">
               <TabsTrigger value="recommendations">Tools</TabsTrigger>
               <TabsTrigger value="quickwins">Quick Wins</TabsTrigger>
               <TabsTrigger value="guides">Guides</TabsTrigger>
               <TabsTrigger value="learning">Learning</TabsTrigger>
               <TabsTrigger value="progress">Progress</TabsTrigger>
+              <TabsTrigger value="analytics">Analytics</TabsTrigger>
               <TabsTrigger value="profile">Profile</TabsTrigger>
             </TabsList>
             
@@ -264,6 +268,10 @@ export default function Dashboard() {
             
             <TabsContent value="progress">
               <ProgressTracking />
+            </TabsContent>
+            
+            <TabsContent value="analytics">
+              <AnalyticsDashboard />
             </TabsContent>
             
             <TabsContent value="profile" className="space-y-6">

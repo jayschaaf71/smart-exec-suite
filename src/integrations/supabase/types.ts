@@ -299,6 +299,39 @@ export type Database = {
         }
         Relationships: []
       }
+      tool_effectiveness_metrics: {
+        Row: {
+          calculated_at: string
+          created_at: string
+          id: string
+          metric_type: string
+          metric_value: number
+          sample_size: number
+          time_period: string
+          tool_id: string | null
+        }
+        Insert: {
+          calculated_at?: string
+          created_at?: string
+          id?: string
+          metric_type: string
+          metric_value: number
+          sample_size?: number
+          time_period: string
+          tool_id?: string | null
+        }
+        Update: {
+          calculated_at?: string
+          created_at?: string
+          id?: string
+          metric_type?: string
+          metric_value?: number
+          sample_size?: number
+          time_period?: string
+          tool_id?: string | null
+        }
+        Relationships: []
+      }
       tool_recommendations: {
         Row: {
           created_at: string
@@ -463,6 +496,123 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      user_analytics_events: {
+        Row: {
+          created_at: string
+          event_data: Json
+          event_type: string
+          id: string
+          ip_address: unknown | null
+          page_url: string | null
+          session_id: string | null
+          user_agent: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          event_data?: Json
+          event_type: string
+          id?: string
+          ip_address?: unknown | null
+          page_url?: string | null
+          session_id?: string | null
+          user_agent?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          event_data?: Json
+          event_type?: string
+          id?: string
+          ip_address?: unknown | null
+          page_url?: string | null
+          session_id?: string | null
+          user_agent?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_analytics_summary: {
+        Row: {
+          avg_session_duration_minutes: number
+          created_at: string
+          engagement_score: number
+          id: string
+          last_calculated_at: string
+          most_active_day_of_week: number | null
+          most_active_hour_of_day: number | null
+          preferred_tool_categories: string[] | null
+          total_page_views: number
+          total_sessions: number
+          total_tool_interactions: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avg_session_duration_minutes?: number
+          created_at?: string
+          engagement_score?: number
+          id?: string
+          last_calculated_at?: string
+          most_active_day_of_week?: number | null
+          most_active_hour_of_day?: number | null
+          preferred_tool_categories?: string[] | null
+          total_page_views?: number
+          total_sessions?: number
+          total_tool_interactions?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avg_session_duration_minutes?: number
+          created_at?: string
+          engagement_score?: number
+          id?: string
+          last_calculated_at?: string
+          most_active_day_of_week?: number | null
+          most_active_hour_of_day?: number | null
+          preferred_tool_categories?: string[] | null
+          total_page_views?: number
+          total_sessions?: number
+          total_tool_interactions?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_behavior_insights: {
+        Row: {
+          confidence_score: number
+          created_at: string
+          expires_at: string | null
+          generated_at: string
+          id: string
+          insight_data: Json
+          insight_type: string
+          user_id: string
+        }
+        Insert: {
+          confidence_score?: number
+          created_at?: string
+          expires_at?: string | null
+          generated_at?: string
+          id?: string
+          insight_data?: Json
+          insight_type: string
+          user_id: string
+        }
+        Update: {
+          confidence_score?: number
+          created_at?: string
+          expires_at?: string | null
+          generated_at?: string
+          id?: string
+          insight_data?: Json
+          insight_type?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       user_implementation_progress: {
         Row: {

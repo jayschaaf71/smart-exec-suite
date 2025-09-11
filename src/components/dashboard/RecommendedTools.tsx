@@ -7,6 +7,7 @@ import { RecommendationEngine, ToolRecommendation } from '@/utils/recommendation
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { Analytics } from '@/utils/analytics';
 
 export function RecommendedTools() {
   const { user } = useAuth();
