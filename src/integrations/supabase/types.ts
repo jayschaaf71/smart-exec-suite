@@ -14,6 +14,42 @@ export type Database = {
   }
   public: {
     Tables: {
+      achievements: {
+        Row: {
+          category: string
+          created_at: string
+          criteria: Json
+          description: string
+          icon: string
+          id: string
+          name: string
+          points: number | null
+          rarity: string | null
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          criteria: Json
+          description: string
+          icon: string
+          id?: string
+          name: string
+          points?: number | null
+          rarity?: string | null
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          criteria?: Json
+          description?: string
+          icon?: string
+          id?: string
+          name?: string
+          points?: number | null
+          rarity?: string | null
+        }
+        Relationships: []
+      }
       categories: {
         Row: {
           color: string | null
@@ -110,6 +146,107 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      learning_modules: {
+        Row: {
+          content_preview: string | null
+          content_url: string | null
+          created_at: string
+          description: string
+          duration_minutes: number
+          id: string
+          learning_objectives: string[] | null
+          module_type: string
+          order_in_path: number
+          path_id: string | null
+          prerequisites: string[] | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          content_preview?: string | null
+          content_url?: string | null
+          created_at?: string
+          description: string
+          duration_minutes: number
+          id?: string
+          learning_objectives?: string[] | null
+          module_type: string
+          order_in_path: number
+          path_id?: string | null
+          prerequisites?: string[] | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          content_preview?: string | null
+          content_url?: string | null
+          created_at?: string
+          description?: string
+          duration_minutes?: number
+          id?: string
+          learning_objectives?: string[] | null
+          module_type?: string
+          order_in_path?: number
+          path_id?: string | null
+          prerequisites?: string[] | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "learning_modules_path_id_fkey"
+            columns: ["path_id"]
+            isOneToOne: false
+            referencedRelation: "learning_paths"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      learning_paths: {
+        Row: {
+          created_at: string
+          description: string
+          difficulty_level: string
+          estimated_duration_hours: number
+          id: string
+          learning_objectives: string[] | null
+          path_order: number | null
+          prerequisites: string[] | null
+          status: string | null
+          target_role: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          difficulty_level: string
+          estimated_duration_hours: number
+          id?: string
+          learning_objectives?: string[] | null
+          path_order?: number | null
+          prerequisites?: string[] | null
+          status?: string | null
+          target_role: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          difficulty_level?: string
+          estimated_duration_hours?: number
+          id?: string
+          learning_objectives?: string[] | null
+          path_order?: number | null
+          prerequisites?: string[] | null
+          status?: string | null
+          target_role?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       profiles: {
         Row: {
@@ -295,6 +432,38 @@ export type Database = {
           },
         ]
       }
+      user_achievements: {
+        Row: {
+          achievement_id: string | null
+          earned_at: string
+          id: string
+          progress_data: Json | null
+          user_id: string
+        }
+        Insert: {
+          achievement_id?: string | null
+          earned_at?: string
+          id?: string
+          progress_data?: Json | null
+          user_id: string
+        }
+        Update: {
+          achievement_id?: string | null
+          earned_at?: string
+          id?: string
+          progress_data?: Json | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_achievements_achievement_id_fkey"
+            columns: ["achievement_id"]
+            isOneToOne: false
+            referencedRelation: "achievements"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_implementation_progress: {
         Row: {
           completed_at: string | null
@@ -347,6 +516,120 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      user_learning_progress: {
+        Row: {
+          bookmarked: boolean | null
+          completed_at: string | null
+          created_at: string
+          id: string
+          last_accessed: string | null
+          module_id: string | null
+          notes: string | null
+          path_id: string | null
+          score: number | null
+          started_at: string | null
+          status: string | null
+          time_spent_minutes: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          bookmarked?: boolean | null
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          last_accessed?: string | null
+          module_id?: string | null
+          notes?: string | null
+          path_id?: string | null
+          score?: number | null
+          started_at?: string | null
+          status?: string | null
+          time_spent_minutes?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          bookmarked?: boolean | null
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          last_accessed?: string | null
+          module_id?: string | null
+          notes?: string | null
+          path_id?: string | null
+          score?: number | null
+          started_at?: string | null
+          status?: string | null
+          time_spent_minutes?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_learning_progress_module_id_fkey"
+            columns: ["module_id"]
+            isOneToOne: false
+            referencedRelation: "learning_modules"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_learning_progress_path_id_fkey"
+            columns: ["path_id"]
+            isOneToOne: false
+            referencedRelation: "learning_paths"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_stats: {
+        Row: {
+          achievements_earned: number | null
+          created_at: string
+          guides_completed: number | null
+          id: string
+          last_activity_date: string | null
+          level_title: string | null
+          modules_completed: number | null
+          streak_days: number | null
+          tools_implemented: number | null
+          total_points: number | null
+          total_time_invested_minutes: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          achievements_earned?: number | null
+          created_at?: string
+          guides_completed?: number | null
+          id?: string
+          last_activity_date?: string | null
+          level_title?: string | null
+          modules_completed?: number | null
+          streak_days?: number | null
+          tools_implemented?: number | null
+          total_points?: number | null
+          total_time_invested_minutes?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          achievements_earned?: number | null
+          created_at?: string
+          guides_completed?: number | null
+          id?: string
+          last_activity_date?: string | null
+          level_title?: string | null
+          modules_completed?: number | null
+          streak_days?: number | null
+          tools_implemented?: number | null
+          total_points?: number | null
+          total_time_invested_minutes?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       user_tool_interactions: {
         Row: {

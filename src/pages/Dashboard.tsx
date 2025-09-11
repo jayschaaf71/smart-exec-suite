@@ -12,6 +12,8 @@ import { useToast } from '@/hooks/use-toast';
 import { RecommendedTools } from '@/components/dashboard/RecommendedTools';
 import { QuickWins } from '@/components/dashboard/QuickWins';
 import { ImplementationGuides } from '@/components/implementation/ImplementationGuides';
+import { ProgressTracking } from '@/components/dashboard/ProgressTracking';
+import { LearningAcademy } from '@/components/learning/LearningAcademy';
 import { 
   Star, 
   TrendingUp, 
@@ -235,11 +237,12 @@ export default function Dashboard() {
 
           {/* Main Tabs */}
           <Tabs defaultValue="recommendations" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-5">
-              <TabsTrigger value="recommendations">Recommended Tools</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-6">
+              <TabsTrigger value="recommendations">Tools</TabsTrigger>
               <TabsTrigger value="quickwins">Quick Wins</TabsTrigger>
-              <TabsTrigger value="guides">Implementation Guides</TabsTrigger>
-              <TabsTrigger value="goals">Your Goals</TabsTrigger>
+              <TabsTrigger value="guides">Guides</TabsTrigger>
+              <TabsTrigger value="learning">Learning</TabsTrigger>
+              <TabsTrigger value="progress">Progress</TabsTrigger>
               <TabsTrigger value="profile">Profile</TabsTrigger>
             </TabsList>
             
@@ -255,23 +258,12 @@ export default function Dashboard() {
               <ImplementationGuides />
             </TabsContent>
             
-            
-            <TabsContent value="quickwins">
-              <QuickWins />
+            <TabsContent value="learning">
+              <LearningAcademy />
             </TabsContent>
             
-            <TabsContent value="goals" className="space-y-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Your AI Implementation Goals</CardTitle>
-                  <CardDescription>
-                    Track your progress toward achieving your AI objectives
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground">Goal tracking coming soon...</p>
-                </CardContent>
-              </Card>
+            <TabsContent value="progress">
+              <ProgressTracking />
             </TabsContent>
             
             <TabsContent value="profile" className="space-y-6">
