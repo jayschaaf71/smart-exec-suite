@@ -86,7 +86,7 @@ export default function Welcome() {
 
             <div className="flex flex-col sm:flex-row gap-3 pt-4">
               <Button 
-                onClick={() => navigate('/onboarding')}
+                onClick={() => navigate('/assessment')}
                 className="flex-1 h-12 text-lg"
                 size="lg"
               >

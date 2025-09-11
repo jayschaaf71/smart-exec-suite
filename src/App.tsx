@@ -10,6 +10,8 @@ import { OfflineIndicator } from "@/components/mobile/OfflineIndicator";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Welcome from "./pages/Welcome";
+import Assessment from "./pages/Assessment";
+import ToolDetail from "./pages/ToolDetail";
 import Onboarding from "./pages/Onboarding";
 import Dashboard from "./pages/Dashboard";
 import UserManagement from "./pages/UserManagement";
@@ -33,6 +35,16 @@ const App = () => (
             <Route path="/welcome" element={
               <ProtectedRoute>
                 <Welcome />
+              </ProtectedRoute>
+            } />
+            <Route path="/assessment" element={
+              <ProtectedRoute>
+                <Assessment />
+              </ProtectedRoute>
+            } />
+            <Route path="/tools/:id" element={
+              <ProtectedRoute>
+                <ToolDetail />
               </ProtectedRoute>
             } />
             <Route path="/onboarding" element={

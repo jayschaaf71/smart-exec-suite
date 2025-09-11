@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Star, ExternalLink, Clock, DollarSign, Zap, ThumbsUp, ThumbsDown } from 'lucide-react';
+import { Star, ExternalLink, Clock, DollarSign, Zap, ThumbsUp, ThumbsDown, Eye } from 'lucide-react';
 import { RecommendationEngine, ToolRecommendation } from '@/utils/recommendationEngine';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
@@ -13,6 +14,7 @@ import { SmartRecommendations } from '@/components/personalization/SmartRecommen
 export function RecommendedTools() {
   const { user } = useAuth();
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [recommendations, setRecommendations] = useState<ToolRecommendation[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -210,11 +212,12 @@ export function RecommendedTools() {
 
               <div className="flex gap-3 pt-4">
                 <Button 
+                  variant="outline"
+                  onClick={() => navigate(`/tools/${recommendation.tool.id}`)}
                   className="flex-1"
-                  onClick={() => window.open(recommendation.tool.website_url, '_blank')}
                 >
-                  <ExternalLink className="h-4 w-4 mr-2" />
-                  Visit Website
+                  <Eye className="h-4 w-4 mr-2" />
+                  View Details
                 </Button>
                 <Button 
                   variant="outline"
