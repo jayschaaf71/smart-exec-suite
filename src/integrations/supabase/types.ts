@@ -14,6 +14,47 @@ export type Database = {
   }
   public: {
     Tables: {
+      categories: {
+        Row: {
+          color: string | null
+          created_at: string
+          description: string | null
+          icon: string | null
+          id: string
+          name: string
+          parent_category_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          color?: string | null
+          created_at?: string
+          description?: string | null
+          icon?: string | null
+          id?: string
+          name: string
+          parent_category_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          color?: string | null
+          created_at?: string
+          description?: string | null
+          icon?: string | null
+          id?: string
+          name?: string
+          parent_category_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "categories_parent_category_id_fkey"
+            columns: ["parent_category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           ai_experience: string | null
@@ -23,8 +64,11 @@ export type Database = {
           display_name: string | null
           goals: string[] | null
           id: string
+          implementation_timeline: string | null
           industry: string | null
+          primary_focus_areas: string[] | null
           role: string | null
+          time_availability: string | null
           updated_at: string
           user_id: string
         }
@@ -36,8 +80,11 @@ export type Database = {
           display_name?: string | null
           goals?: string[] | null
           id?: string
+          implementation_timeline?: string | null
           industry?: string | null
+          primary_focus_areas?: string[] | null
           role?: string | null
+          time_availability?: string | null
           updated_at?: string
           user_id: string
         }
@@ -49,12 +96,186 @@ export type Database = {
           display_name?: string | null
           goals?: string[] | null
           id?: string
+          implementation_timeline?: string | null
           industry?: string | null
+          primary_focus_areas?: string[] | null
           role?: string | null
+          time_availability?: string | null
           updated_at?: string
           user_id?: string
         }
         Relationships: []
+      }
+      tool_recommendations: {
+        Row: {
+          created_at: string
+          id: string
+          reason: string | null
+          recommendation_score: number
+          status: string | null
+          tool_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          reason?: string | null
+          recommendation_score: number
+          status?: string | null
+          tool_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          reason?: string | null
+          recommendation_score?: number
+          status?: string | null
+          tool_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tool_recommendations_tool_id_fkey"
+            columns: ["tool_id"]
+            isOneToOne: false
+            referencedRelation: "tools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tools: {
+        Row: {
+          category_id: string | null
+          cons: string[] | null
+          created_at: string
+          description: string
+          expert_rating: number | null
+          features: string[] | null
+          id: string
+          implementation_guide: string | null
+          integrations: string[] | null
+          logo_url: string | null
+          name: string
+          popularity_score: number | null
+          pricing_amount: number | null
+          pricing_model: string | null
+          pros: string[] | null
+          setup_difficulty: string | null
+          status: string | null
+          target_company_sizes: string[] | null
+          target_industries: string[] | null
+          target_roles: string[] | null
+          time_to_value: string | null
+          updated_at: string
+          user_rating: number | null
+          video_tutorial_url: string | null
+          website_url: string | null
+        }
+        Insert: {
+          category_id?: string | null
+          cons?: string[] | null
+          created_at?: string
+          description: string
+          expert_rating?: number | null
+          features?: string[] | null
+          id?: string
+          implementation_guide?: string | null
+          integrations?: string[] | null
+          logo_url?: string | null
+          name: string
+          popularity_score?: number | null
+          pricing_amount?: number | null
+          pricing_model?: string | null
+          pros?: string[] | null
+          setup_difficulty?: string | null
+          status?: string | null
+          target_company_sizes?: string[] | null
+          target_industries?: string[] | null
+          target_roles?: string[] | null
+          time_to_value?: string | null
+          updated_at?: string
+          user_rating?: number | null
+          video_tutorial_url?: string | null
+          website_url?: string | null
+        }
+        Update: {
+          category_id?: string | null
+          cons?: string[] | null
+          created_at?: string
+          description?: string
+          expert_rating?: number | null
+          features?: string[] | null
+          id?: string
+          implementation_guide?: string | null
+          integrations?: string[] | null
+          logo_url?: string | null
+          name?: string
+          popularity_score?: number | null
+          pricing_amount?: number | null
+          pricing_model?: string | null
+          pros?: string[] | null
+          setup_difficulty?: string | null
+          status?: string | null
+          target_company_sizes?: string[] | null
+          target_industries?: string[] | null
+          target_roles?: string[] | null
+          time_to_value?: string | null
+          updated_at?: string
+          user_rating?: number | null
+          video_tutorial_url?: string | null
+          website_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tools_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_tool_interactions: {
+        Row: {
+          created_at: string
+          id: string
+          interaction_type: string
+          notes: string | null
+          tool_id: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          interaction_type: string
+          notes?: string | null
+          tool_id?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          interaction_type?: string
+          notes?: string | null
+          tool_id?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_tool_interactions_tool_id_fkey"
+            columns: ["tool_id"]
+            isOneToOne: false
+            referencedRelation: "tools"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
