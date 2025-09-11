@@ -5,6 +5,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/hooks/useAuth";
 import { ProtectedRoute } from "@/components/auth/ProtectedRoute";
+import { InstallPrompt } from "@/components/mobile/InstallPrompt";
+import { OfflineIndicator } from "@/components/mobile/OfflineIndicator";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Onboarding from "./pages/Onboarding";
@@ -20,6 +22,8 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
+          <OfflineIndicator />
+          <InstallPrompt />
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />

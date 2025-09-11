@@ -1,0 +1,53 @@
+{
+  "name": "Smart Executive Suite",
+  "short_name": "SmartExec",
+  "description": "AI-powered productivity platform for executives and professionals",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#6366f1",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "16x16 32x32",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "/placeholder.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/placeholder.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["productivity", "business", "utilities"],
+  "shortcuts": [
+    {
+      "name": "Dashboard",
+      "short_name": "Dashboard",
+      "description": "Access your personalized dashboard",
+      "url": "/dashboard",
+      "icons": [{ "src": "/placeholder.svg", "sizes": "96x96" }]
+    },
+    {
+      "name": "Learning Academy",
+      "short_name": "Learn",
+      "description": "Continue your AI learning journey",
+      "url": "/dashboard?tab=learning",
+      "icons": [{ "src": "/placeholder.svg", "sizes": "96x96" }]
+    },
+    {
+      "name": "Quick Wins",
+      "short_name": "Quick Wins",
+      "description": "View quick improvement opportunities",
+      "url": "/dashboard?tab=quickwins",
+      "icons": [{ "src": "/placeholder.svg", "sizes": "96x96" }]
+    }
+  ]
+}
