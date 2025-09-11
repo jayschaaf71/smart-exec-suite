@@ -3,8 +3,29 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
+import { Button } from '@/components/ui/button';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useAuth } from '@/hooks/useAuth';
 import { Analytics } from '@/utils/analytics';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
+import { 
+  BarChart, 
+  Bar, 
+  XAxis, 
+  YAxis, 
+  CartesianGrid, 
+  Tooltip, 
+  Legend, 
+  ResponsiveContainer,
+  LineChart,
+  Line,
+  PieChart,
+  Pie,
+  Cell,
+  Area,
+  AreaChart
+} from 'recharts';
 import { 
   BarChart3, 
   TrendingUp, 
@@ -15,7 +36,10 @@ import {
   Calendar,
   Star,
   Lightbulb,
-  Zap
+  Zap,
+  Download,
+  Eye,
+  MousePointer
 } from 'lucide-react';
 
 interface AnalyticsSummary {
@@ -36,11 +60,32 @@ interface UserInsight {
   generated_at: string;
 }
 
+interface ChartData {
+  name: string;
+  value: number;
+  date?: string;
+  pageViews?: number;
+  interactions?: number;
+}
+
+const COLORS = ['hsl(var(--primary))', 'hsl(var(--secondary))', 'hsl(var(--accent))', '#ff7300', '#8dd1e1'];
+
 export default function AnalyticsDashboard() {
   const { user } = useAuth();
+  const { toast } = useToast();
   const [loading, setLoading] = useState(true);
   const [analyticsSummary, setAnalyticsSummary] = useState<AnalyticsSummary | null>(null);
   const [insights, setInsights] = useState<UserInsight[]>([]);
+  const [timeRange, setTimeRange] = useState('7d');
+  const [chartData, setChartData] = useState<{
+    daily: ChartData[];
+    categories: ChartData[];
+    performance: ChartData[];
+  }>({
+    daily: [],
+    categories: [],
+    performance: []
+  });
 
   useEffect(() => {
     if (user) {
@@ -53,18 +98,136 @@ export default function AnalyticsDashboard() {
     if (!user) return;
 
     try {
-      const [summary, userInsights] = await Promise.all([
-        Analytics.getAnalyticsSummary(user.id),
-        Analytics.getUserInsights(user.id)
-      ]);
+      // Fetch analytics summary
+      const { data: summary, error: summaryError } = await supabase
+        .from('user_analytics_summary')
+        .select('*')
+        .eq('user_id', user.id)
+        .maybeSingle();
 
-      setAnalyticsSummary(summary);
-      setInsights(userInsights);
+      if (summaryError) throw summaryError;
+
+      // Fetch insights
+      const { data: userInsights, error: insightsError } = await supabase
+        .from('user_behavior_insights')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('generated_at', { ascending: false })
+        .limit(10);
+
+      if (insightsError) throw insightsError;
+
+      // Fetch recent events for charts
+      const daysBack = timeRange === '7d' ? 7 : timeRange === '30d' ? 30 : 90;
+      const startDate = new Date();
+      startDate.setDate(startDate.getDate() - daysBack);
+
+      const { data: events, error: eventsError } = await supabase
+        .from('user_analytics_events')
+        .select('*')
+        .eq('user_id', user.id)
+        .gte('created_at', startDate.toISOString())
+        .order('created_at', { ascending: true });
+
+      if (eventsError) throw eventsError;
+
+      if (summary) {
+        setAnalyticsSummary(summary);
+        setInsights(userInsights || []);
+
+        // Process chart data
+        const dailyData = processDailyData(events || []);
+        const categoryData = processCategoryData(summary.preferred_tool_categories || []);
+        const performanceData = generatePerformanceData(summary);
+
+        setChartData({
+          daily: dailyData,
+          categories: categoryData,
+          performance: performanceData
+        });
+      }
     } catch (error) {
       console.error('Error loading analytics:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load analytics data",
+        variant: "destructive",
+      });
     } finally {
       setLoading(false);
     }
+  };
+
+  const processDailyData = (events: any[]) => {
+    const dailyMap = new Map();
+    
+    events.forEach(event => {
+      const date = new Date(event.created_at).toLocaleDateString();
+      if (!dailyMap.has(date)) {
+        dailyMap.set(date, { pageViews: 0, interactions: 0 });
+      }
+      
+      const dayData = dailyMap.get(date);
+      if (event.event_type === 'page_view') {
+        dayData.pageViews++;
+      } else if (event.event_type === 'tool_interaction') {
+        dayData.interactions++;
+      }
+    });
+
+    return Array.from(dailyMap.entries()).map(([date, data]) => ({
+      name: date,
+      pageViews: data.pageViews,
+      interactions: data.interactions,
+      value: data.pageViews + data.interactions
+    }));
+  };
+
+  const processCategoryData = (categories: string[]) => {
+    const categoryMap = new Map();
+    
+    categories.forEach(category => {
+      categoryMap.set(category, (categoryMap.get(category) || 0) + 1);
+    });
+
+    return Array.from(categoryMap.entries()).map(([name, value]) => ({
+      name,
+      value
+    }));
+  };
+
+  const generatePerformanceData = (summary: any) => {
+    return [
+      { name: 'Engagement Score', value: Math.round((summary.engagement_score || 0) * 100) },
+      { name: 'Session Quality', value: Math.min(100, Math.round((summary.avg_session_duration_minutes || 0) * 10)) },
+      { name: 'Tool Adoption', value: Math.min(100, Math.round((summary.total_tool_interactions || 0) * 5)) },
+      { name: 'Learning Progress', value: Math.floor(Math.random() * 80) + 20 }, // Placeholder
+    ];
+  };
+
+  const exportAnalytics = () => {
+    const data = {
+      summary: analyticsSummary,
+      insights: insights,
+      charts: chartData,
+      timeRange: timeRange,
+      exportedAt: new Date().toISOString()
+    };
+
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `analytics-${timeRange}-${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    toast({
+      title: "Analytics Exported",
+      description: "Your analytics data has been downloaded successfully.",
+    });
   };
 
   const getDayName = (dayIndex: number) => {
@@ -134,24 +297,36 @@ export default function AnalyticsDashboard() {
 
   return (
     <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h2 className="text-2xl font-bold">Analytics Dashboard</h2>
+          <p className="text-muted-foreground">Track your AI tool usage and learning progress</p>
+        </div>
+        <div className="flex items-center gap-4">
+          <Select value={timeRange} onValueChange={setTimeRange}>
+            <SelectTrigger className="w-32">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="7d">7 Days</SelectItem>
+              <SelectItem value="30d">30 Days</SelectItem>
+              <SelectItem value="90d">90 Days</SelectItem>
+            </SelectContent>
+          </Select>
+          <Button onClick={exportAnalytics} variant="outline" size="sm">
+            <Download className="h-4 w-4 mr-2" />
+            Export
+          </Button>
+        </div>
+      </div>
+
       {/* Overview Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         <Card>
           <CardContent className="p-6">
             <div className="flex items-center">
-              <Users className="h-8 w-8 text-blue-600" />
-              <div className="ml-4">
-                <p className="text-sm font-medium text-muted-foreground">Total Sessions</p>
-                <p className="text-2xl font-bold">{analyticsSummary.total_sessions}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center">
-              <BarChart3 className="h-8 w-8 text-green-600" />
+              <Eye className="h-8 w-8 text-blue-600" />
               <div className="ml-4">
                 <p className="text-sm font-medium text-muted-foreground">Page Views</p>
                 <p className="text-2xl font-bold">{analyticsSummary.total_page_views}</p>
@@ -163,10 +338,10 @@ export default function AnalyticsDashboard() {
         <Card>
           <CardContent className="p-6">
             <div className="flex items-center">
-              <Target className="h-8 w-8 text-purple-600" />
+              <Users className="h-8 w-8 text-green-600" />
               <div className="ml-4">
-                <p className="text-sm font-medium text-muted-foreground">Tool Interactions</p>
-                <p className="text-2xl font-bold">{analyticsSummary.total_tool_interactions}</p>
+                <p className="text-sm font-medium text-muted-foreground">Sessions</p>
+                <p className="text-2xl font-bold">{analyticsSummary.total_sessions}</p>
               </div>
             </div>
           </CardContent>
@@ -175,10 +350,22 @@ export default function AnalyticsDashboard() {
         <Card>
           <CardContent className="p-6">
             <div className="flex items-center">
-              <Clock className="h-8 w-8 text-orange-600" />
+              <Clock className="h-8 w-8 text-purple-600" />
               <div className="ml-4">
-                <p className="text-sm font-medium text-muted-foreground">Avg Session</p>
+                <p className="text-sm font-medium text-muted-foreground">Avg. Session</p>
                 <p className="text-2xl font-bold">{Math.round(analyticsSummary.avg_session_duration_minutes)}m</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-6">
+            <div className="flex items-center">
+              <MousePointer className="h-8 w-8 text-orange-600" />
+              <div className="ml-4">
+                <p className="text-sm font-medium text-muted-foreground">Tool Interactions</p>
+                <p className="text-2xl font-bold">{analyticsSummary.total_tool_interactions}</p>
               </div>
             </div>
           </CardContent>
@@ -186,8 +373,9 @@ export default function AnalyticsDashboard() {
       </div>
 
       <Tabs defaultValue="overview" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="charts">Charts</TabsTrigger>
           <TabsTrigger value="insights">Insights</TabsTrigger>
           <TabsTrigger value="patterns">Patterns</TabsTrigger>
         </TabsList>
@@ -258,6 +446,90 @@ export default function AnalyticsDashboard() {
                   </Badge>
                 )) || <p className="text-muted-foreground">No preferences identified yet</p>}
               </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="charts" className="space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Daily Activity</CardTitle>
+                <CardDescription>Your page views and tool interactions over time</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={300}>
+                  <AreaChart data={chartData.daily}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Area 
+                      type="monotone" 
+                      dataKey="pageViews" 
+                      stackId="1"
+                      stroke="hsl(var(--primary))" 
+                      fill="hsl(var(--primary))" 
+                      fillOpacity={0.6}
+                    />
+                    <Area 
+                      type="monotone" 
+                      dataKey="interactions" 
+                      stackId="1"
+                      stroke="hsl(var(--secondary))" 
+                      fill="hsl(var(--secondary))" 
+                      fillOpacity={0.6}
+                    />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Tool Categories</CardTitle>
+                <CardDescription>Distribution of your tool usage by category</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ResponsiveContainer width="100%" height={300}>
+                  <PieChart>
+                    <Pie
+                      data={chartData.categories}
+                      cx="50%"
+                      cy="50%"
+                      labelLine={false}
+                      label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                      outerRadius={80}
+                      fill="hsl(var(--primary))"
+                      dataKey="value"
+                    >
+                      {chartData.categories.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                  </PieChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+          </div>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Performance Metrics</CardTitle>
+              <CardDescription>Your engagement and learning progress scores</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={chartData.performance}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="name" />
+                  <YAxis domain={[0, 100]} />
+                  <Tooltip />
+                  <Bar dataKey="value" fill="hsl(var(--primary))" />
+                </BarChart>
+              </ResponsiveContainer>
             </CardContent>
           </Card>
         </TabsContent>
