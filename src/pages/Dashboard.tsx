@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -53,7 +54,7 @@ export default function Dashboard() {
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [recommendedTools, setRecommendedTools] = useState<AITool[]>([]);
-
+  const navigate = useNavigate();
   useEffect(() => {
     if (user) {
       fetchProfile();
@@ -439,10 +440,10 @@ export default function Dashboard() {
                     </p>
                   </div>
                 </div>
-                <Button variant="outline">
-                  <Settings className="mr-2 h-4 w-4" />
-                  Edit Profile
-                </Button>
+<Button variant="outline" onClick={() => navigate('/onboarding')}>
+  <Settings className="mr-2 h-4 w-4" />
+  Edit Profile
+</Button>
               </CardContent>
             </Card>
           </TabsContent>

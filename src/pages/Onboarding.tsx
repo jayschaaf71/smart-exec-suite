@@ -23,6 +23,7 @@ const roles = [
   { id: 'cto', title: 'CTO', description: 'Chief Technology Officer' },
   { id: 'cmo', title: 'CMO', description: 'Chief Marketing Officer' },
   { id: 'coo', title: 'COO', description: 'Chief Operating Officer' },
+  { id: 'cfo', title: 'CFO', description: 'Chief Financial Officer' },
   { id: 'director', title: 'Director', description: 'Department Director or Senior Manager' },
   { id: 'manager', title: 'Manager', description: 'Team Lead or Manager' },
 ];
