@@ -8,6 +8,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { Analytics } from '@/utils/analytics';
+import { SmartRecommendations } from '@/components/personalization/SmartRecommendations';
 
 export function RecommendedTools() {
   const { user } = useAuth();
@@ -241,16 +242,15 @@ export function RecommendedTools() {
           </CardContent>
         </Card>
       ))}
-     </div>
-
-     {/* AI-Powered Smart Recommendations */}
-     <div className="mt-8">
-       <SmartRecommendations 
-         context={{ contextType: 'general' }}
-         showHeader={true}
-         maxRecommendations={3}
-       />
-     </div>
-   </div>
- );
+      
+      {/* AI-Powered Smart Recommendations */}
+      <div className="mt-8">
+        <SmartRecommendations 
+          context={{ contextType: 'general' }}
+          showHeader={true}
+          maxRecommendations={3}
+        />
+      </div>
+    </div>
+  );
 }
