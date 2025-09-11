@@ -17,6 +17,8 @@ import { LearningAcademy } from '@/components/learning/LearningAcademy';
 import AnalyticsDashboard from '@/components/analytics/AnalyticsDashboard';
 import { NotificationPreferences } from '@/components/notifications/NotificationPreferences';
 import { IntegrationExport } from '@/components/integration/IntegrationExport';
+import { EnterpriseFeatures } from '@/components/enterprise/EnterpriseFeatures';
+import { SystemHealth } from '@/components/system/SystemHealth';
 import { Analytics } from '@/utils/analytics';
 import { 
   Star, 
@@ -248,7 +250,7 @@ export default function Dashboard() {
 
           {/* Main Tabs */}
           <Tabs defaultValue="recommendations" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-4 lg:grid-cols-9">
+            <TabsList className="grid w-full grid-cols-4 lg:grid-cols-11">
               <TabsTrigger value="recommendations">Tools</TabsTrigger>
               <TabsTrigger value="quickwins">Quick Wins</TabsTrigger>
               <TabsTrigger value="guides">Guides</TabsTrigger>
@@ -256,6 +258,8 @@ export default function Dashboard() {
               <TabsTrigger value="progress">Progress</TabsTrigger>
               <TabsTrigger value="analytics">Analytics</TabsTrigger>
               <TabsTrigger value="integrations">Export</TabsTrigger>
+              <TabsTrigger value="enterprise">Enterprise</TabsTrigger>
+              <TabsTrigger value="system">System</TabsTrigger>
               <TabsTrigger value="notifications">Notifications</TabsTrigger>
               <TabsTrigger value="profile">Profile</TabsTrigger>
             </TabsList>
@@ -286,6 +290,14 @@ export default function Dashboard() {
             
             <TabsContent value="integrations">
               <IntegrationExport />
+            </TabsContent>
+            
+            <TabsContent value="enterprise">
+              <EnterpriseFeatures />
+            </TabsContent>
+            
+            <TabsContent value="system">
+              <SystemHealth />
             </TabsContent>
             
             <TabsContent value="notifications">
