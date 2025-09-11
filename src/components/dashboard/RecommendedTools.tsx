@@ -241,6 +241,16 @@ export function RecommendedTools() {
           </CardContent>
         </Card>
       ))}
-    </div>
-  );
+     </div>
+
+     {/* AI-Powered Smart Recommendations */}
+     <div className="mt-8">
+       <SmartRecommendations 
+         context={{ contextType: 'general' }}
+         showHeader={true}
+         maxRecommendations={3}
+       />
+     </div>
+   </div>
+ );
 }
