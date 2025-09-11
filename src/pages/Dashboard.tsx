@@ -30,6 +30,8 @@ import {
   Zap,
   Users
 } from 'lucide-react';
+import { NotificationCenter } from '@/components/notifications/NotificationCenter';
+import { NotificationPreferences } from '@/components/notifications/NotificationPreferences';
 
 interface UserProfile {
   display_name: string;
@@ -138,6 +140,8 @@ export default function Dashboard() {
             </div>
             
             <div className="flex items-center space-x-4">
+              <NotificationCenter />
+              
               <Button
                 variant="ghost"
                 size="sm"
@@ -240,13 +244,14 @@ export default function Dashboard() {
 
           {/* Main Tabs */}
           <Tabs defaultValue="recommendations" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-7">
+            <TabsList className="grid w-full grid-cols-8">
               <TabsTrigger value="recommendations">Tools</TabsTrigger>
               <TabsTrigger value="quickwins">Quick Wins</TabsTrigger>
               <TabsTrigger value="guides">Guides</TabsTrigger>
               <TabsTrigger value="learning">Learning</TabsTrigger>
               <TabsTrigger value="progress">Progress</TabsTrigger>
               <TabsTrigger value="analytics">Analytics</TabsTrigger>
+              <TabsTrigger value="notifications">Notifications</TabsTrigger>
               <TabsTrigger value="profile">Profile</TabsTrigger>
             </TabsList>
             
@@ -272,6 +277,10 @@ export default function Dashboard() {
             
             <TabsContent value="analytics">
               <AnalyticsDashboard />
+            </TabsContent>
+            
+            <TabsContent value="notifications">
+              <NotificationPreferences />
             </TabsContent>
             
             <TabsContent value="profile" className="space-y-6">

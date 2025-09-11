@@ -67,6 +67,14 @@ export class Analytics {
     });
   }
 
+  static async trackNotificationAction(notificationId: string, action: string) {
+    await this.track('notification_interaction', {
+      notification_id: notificationId,
+      action: action,
+      timestamp: new Date().toISOString(),
+    });
+  }
+
   static async getAnalyticsSummary(userId: string) {
     try {
       const { data, error } = await supabase
