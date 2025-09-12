@@ -36,7 +36,7 @@ const roles = [
 
 const industries = [
   'Technology', 'Finance', 'Healthcare', 'Manufacturing', 'Professional Services',
-  'Retail', 'Education', 'Government', 'Real Estate', 'Consulting',
+  'Retail', 'Education', 'Government', 'Real Estate', 'Consulting', 'Legal',
   'Media & Entertainment', 'Non-profit', 'Energy', 'Transportation', 'Other'
 ];
 
