@@ -207,10 +207,7 @@ export default function Dashboard() {
                 </div>
               </CardContent>
             </Card>
-                  
-                  <TabsContent value="integrations" className="space-y-6">
-                    <IntegrationExport />
-                  </TabsContent>
+            
             <Card>
               <CardContent className="p-6">
                 <div className="flex items-center">
