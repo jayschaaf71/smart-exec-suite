@@ -66,6 +66,25 @@ export default function Dashboard() {
   const fetchProfile = async () => {
     if (!user) return;
     
+    // For mock user, use mock data
+    if (user.id === '550e8400-e29b-41d4-a716-446655440000') {
+      setProfile({
+        display_name: 'Test User',
+        role: 'Manager',
+        industry: 'Technology', 
+        ai_experience: 'Beginner'
+      });
+      
+      setStats({
+        toolsRecommended: 8,
+        toolsImplemented: 0,
+        goalsActive: 3,
+        timeInvested: '0 hours'
+      });
+      setLoading(false);
+      return;
+    }
+    
     try {
       const { data, error } = await supabase
         .from('profiles')
