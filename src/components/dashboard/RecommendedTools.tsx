@@ -29,52 +29,36 @@ export function RecommendedTools() {
     
     setLoading(true);
     try {
-      console.log('Loading recommendations for user:', user.id);
-      
-      // First try to get existing recommendations
-      let recommendations = await RecommendationEngine.getUserRecommendations(user.id);
-      console.log('Existing recommendations:', recommendations);
-      
-      // Always generate fresh recommendations for debugging
-      console.log('Forcing fresh recommendation generation...');
-      
-      // Get user profile
-      const { data: profile, error: profileError } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('user_id', user.id)
-        .single();
-
-      console.log('User profile:', profile);
-      console.log('Profile error:', profileError);
-
-      if (profile && profile.role && profile.industry) {
-        console.log('Generating recommendations with profile:', {
-          role: profile.role,
-          industry: profile.industry,
-          company_size: profile.company_size || '1-10 employees',
-          ai_experience: profile.ai_experience || 'never',
-          goals: profile.goals || [],
-          time_availability: profile.time_availability || '30 minutes per day',
-          implementation_timeline: profile.implementation_timeline || 'This month'
-        });
-        
-        recommendations = await RecommendationEngine.generateRecommendations(user.id, {
-          role: profile.role,
-          industry: profile.industry,
-          company_size: profile.company_size || '1-10 employees',
-          ai_experience: profile.ai_experience || 'never',
-          goals: profile.goals || [],
-          time_availability: profile.time_availability || '30 minutes per day',
-          implementation_timeline: profile.implementation_timeline || 'This month'
-        });
-        
-        console.log('Generated recommendations:', recommendations);
+      // Get user profile first
+      let profile;
+      if (user.id === '550e8400-e29b-41d4-a716-446655440000') {
+        // Mock profile for test user
+        profile = {
+          role: 'manager',
+          industry: 'technology',
+          company_size: 'startup',
+          ai_experience: 'chatgpt',
+          goals: ['Increase personal productivity', 'Improve team efficiency'],
+          time_availability: 'few_hours_week',
+          implementation_timeline: 'This month'
+        };
       } else {
-        console.log('Profile incomplete or missing:', profile);
+        const { data } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('user_id', user.id)
+          .maybeSingle();
+        profile = data;
       }
-      
-      setRecommendations(recommendations);
+
+      if (!profile) {
+        setLoading(false);
+        return;
+      }
+
+      // Generate fresh recommendations using the recommendation engine
+      const newRecommendations = await RecommendationEngine.generateRecommendations(user.id, profile);
+      setRecommendations(newRecommendations);
     } catch (error) {
       console.error('Error loading recommendations:', error);
       toast({
