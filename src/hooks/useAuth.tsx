@@ -19,7 +19,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   // BYPASS AUTH FOR TESTING - Create a mock user
   const mockUser = {
-    id: 'test-user-123',
+    id: '550e8400-e29b-41d4-a716-446655440000',
     email: 'test@example.com',
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
