@@ -3,7 +3,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { BookOpen, PlayCircle, Clock, Star, Users, CheckCircle, ArrowRight } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { BookOpen, PlayCircle, Clock, Star, Users, CheckCircle, ArrowRight, Target } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
@@ -17,6 +18,7 @@ interface LearningPath {
   estimated_duration_hours: number;
   prerequisites: string[];
   learning_objectives: string[];
+  learning_modules?: LearningModule[];
   progress?: {
     modules_completed: number;
     total_modules: number;
@@ -27,12 +29,13 @@ interface LearningPath {
 
 interface LearningModule {
   id: string;
+  path_id?: string;
   title: string;
   description: string;
   module_type: string;
   duration_minutes: number;
   content_preview: string;
-  completed: boolean;
+  completed?: boolean;
 }
 
 export function LearningAcademy() {
@@ -133,6 +136,7 @@ export function LearningAcademy() {
 
       const recentMods = recentProgress?.map(p => ({
         ...p.learning_modules,
+        path_id: p.path_id,
         completed: p.status === 'completed'
       })) || [];
 
@@ -429,6 +433,84 @@ export function LearningAcademy() {
         </Card>
       )}
 
+      {/* Enhanced Learning with Tabs */}
+      <Tabs defaultValue="paths" className="space-y-6">
+        <TabsList>
+          <TabsTrigger value="paths">Learning Paths</TabsTrigger>
+          <TabsTrigger value="modules">Quick Modules</TabsTrigger>
+          <TabsTrigger value="progress">My Progress</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="modules" className="space-y-6">
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {learningPaths.flatMap(path => path.learning_modules || []).slice(0, 6).map((module) => (
+              <Card key={module.id} className="hover:shadow-lg transition-shadow">
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <Badge variant="secondary">{module.module_type}</Badge>
+                    <div className="flex items-center text-sm text-muted-foreground">
+                      <Clock className="h-4 w-4 mr-1" />
+                      {module.duration_minutes}min
+                    </div>
+                  </div>
+                  <CardTitle className="text-lg">{module.title}</CardTitle>
+                  <CardDescription>{module.description}</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Target className="h-4 w-4" />
+                      <span className="text-sm font-medium">Learning Objectives</span>
+                    </div>
+                    <div className="text-sm text-muted-foreground">
+                      {module.content_preview}
+                    </div>
+                    
+                    <Button className="w-full" onClick={() => module.path_id && startLearningPath(module.path_id)}>
+                      <PlayCircle className="h-4 w-4 mr-2" />
+                      Start Module
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </TabsContent>
+
+        <TabsContent value="progress" className="space-y-6">
+          <div className="grid gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Learning Statistics</CardTitle>
+                <CardDescription>Track your learning journey</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid gap-4 md:grid-cols-3">
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-primary">
+                      {learningPaths.reduce((acc, path) => acc + (path.progress?.modules_completed || 0), 0)}
+                    </div>
+                    <div className="text-sm text-muted-foreground">Modules Completed</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-primary">
+                      {learningPaths.reduce((acc, path) => acc + (path.estimated_duration_hours || 0), 0)}h
+                    </div>
+                    <div className="text-sm text-muted-foreground">Total Duration</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-primary">
+                      {learningPaths.filter(path => path.progress?.status === 'in_progress').length}
+                    </div>
+                    <div className="text-sm text-muted-foreground">In Progress</div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+      </Tabs>
+
       {/* Learning Stats */}
       <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-6">
         <h3 className="text-xl font-semibold text-gray-900 mb-4 text-center">
@@ -436,11 +518,13 @@ export function LearningAcademy() {
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           <div className="text-center">
-            <div className="text-3xl font-bold text-blue-600 mb-1">4</div>
+            <div className="text-3xl font-bold text-blue-600 mb-1">{learningPaths.length}</div>
             <div className="text-sm text-gray-600">Learning Paths</div>
           </div>
           <div className="text-center">
-            <div className="text-3xl font-bold text-purple-600 mb-1">25+</div>
+            <div className="text-3xl font-bold text-purple-600 mb-1">
+              {learningPaths.reduce((acc, path) => acc + (path.progress?.total_modules || 0), 0)}
+            </div>
             <div className="text-sm text-gray-600">Learning Modules</div>
           </div>
           <div className="text-center">

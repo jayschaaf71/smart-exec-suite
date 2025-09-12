@@ -739,6 +739,7 @@ export type Database = {
           current_step: number | null
           guide_id: string | null
           id: string
+          implementation_status: string | null
           notes: string | null
           started_at: string | null
           status: string | null
@@ -753,6 +754,7 @@ export type Database = {
           current_step?: number | null
           guide_id?: string | null
           id?: string
+          implementation_status?: string | null
           notes?: string | null
           started_at?: string | null
           status?: string | null
@@ -767,6 +769,7 @@ export type Database = {
           current_step?: number | null
           guide_id?: string | null
           id?: string
+          implementation_status?: string | null
           notes?: string | null
           started_at?: string | null
           status?: string | null
@@ -846,6 +849,47 @@ export type Database = {
             columns: ["path_id"]
             isOneToOne: false
             referencedRelation: "learning_paths"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_recommendations: {
+        Row: {
+          created_at: string | null
+          id: string
+          priority_order: number | null
+          recommendation_reason: string | null
+          status: string | null
+          tool_id: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          priority_order?: number | null
+          recommendation_reason?: string | null
+          status?: string | null
+          tool_id?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          priority_order?: number | null
+          recommendation_reason?: string | null
+          status?: string | null
+          tool_id?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_recommendations_tool_id_fkey"
+            columns: ["tool_id"]
+            isOneToOne: false
+            referencedRelation: "tools"
             referencedColumns: ["id"]
           },
         ]
