@@ -19,6 +19,7 @@ import { NotificationPreferences } from '@/components/notifications/Notification
 import { IntegrationExport } from '@/components/integration/IntegrationExport';
 import { EnterpriseFeatures } from '@/components/enterprise/EnterpriseFeatures';
 import { SystemHealth } from '@/components/system/SystemHealth';
+import { ToolLibrary } from '@/components/tools/ToolLibrary';
 import { Analytics } from '@/utils/analytics';
 import { 
   Star, 
@@ -266,8 +267,9 @@ export default function Dashboard() {
 
           {/* Main Tabs */}
           <Tabs defaultValue="recommendations" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-4 lg:grid-cols-11">
-              <TabsTrigger value="recommendations">Tools</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-4 lg:grid-cols-12">
+              <TabsTrigger value="recommendations">Recommended</TabsTrigger>
+              <TabsTrigger value="library">Library</TabsTrigger>
               <TabsTrigger value="quickwins">Quick Wins</TabsTrigger>
               <TabsTrigger value="guides">Guides</TabsTrigger>
               <TabsTrigger value="learning">Learning</TabsTrigger>
@@ -282,6 +284,10 @@ export default function Dashboard() {
             
             <TabsContent value="recommendations">
               <RecommendedTools />
+            </TabsContent>
+            
+            <TabsContent value="library">
+              <ToolLibrary />
             </TabsContent>
             
             <TabsContent value="quickwins">
