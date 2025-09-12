@@ -170,6 +170,19 @@ export default function AdminDashboard() {
     );
   }
 
+  if (!stats) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <AlertTriangle className="mx-auto h-12 w-12 text-destructive mb-4" />
+          <h2 className="text-xl font-semibold mb-2">Unable to load dashboard</h2>
+          <p className="text-muted-foreground mb-4">There was an error loading the admin dashboard data.</p>
+          <Button onClick={loadDashboardData}>Try Again</Button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 py-8">
