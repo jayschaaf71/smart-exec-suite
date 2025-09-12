@@ -17,9 +17,21 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
+  // BYPASS AUTH FOR TESTING - Create a mock user
+  const mockUser = {
+    id: 'test-user-123',
+    email: 'test@example.com',
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+    aud: 'authenticated',
+    role: 'authenticated',
+    user_metadata: { full_name: 'Test User' },
+    app_metadata: {}
+  } as User;
+
+  const [user, setUser] = useState<User | null>(mockUser);
   const [session, setSession] = useState<Session | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     // Set up auth state listener FIRST
