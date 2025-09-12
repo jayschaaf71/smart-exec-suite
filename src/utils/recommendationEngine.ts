@@ -46,18 +46,25 @@ export class RecommendationEngine {
   static calculateRelevanceScore(tool: AITool, profile: UserProfile): number {
     let score = 0;
 
+    console.log('Calculating score for tool:', tool.name, 'with profile role:', profile.role);
+
     // Role Match (40% weight)
-    if (tool.target_roles?.includes(profile.role)) {
+    if (tool.target_roles?.includes(profile.role.toLowerCase())) {
       score += 40;
+      console.log('Role match:', profile.role, 'in', tool.target_roles);
     } else if (tool.target_roles?.includes('all') || !tool.target_roles?.length) {
       score += 20; // Generic tools get partial score
+      console.log('Generic role match');
     }
 
     // Industry Relevance (25% weight)
-    if (tool.target_industries?.includes(profile.industry)) {
+    const industryLower = profile.industry?.toLowerCase();
+    if (tool.target_industries?.some(industry => industry.toLowerCase().includes(industryLower))) {
       score += 25;
+      console.log('Industry match:', profile.industry, 'with', tool.target_industries);
     } else if (tool.target_industries?.includes('all') || !tool.target_industries?.length) {
       score += 12; // Generic tools get partial score
+      console.log('Generic industry match');
     }
 
     // Company Size Fit (15% weight)
@@ -87,6 +94,7 @@ export class RecommendationEngine {
       score -= 10;
     }
 
+    console.log('Final score for', tool.name, ':', Math.min(100, Math.max(0, score)));
     return Math.min(100, Math.max(0, score));
   }
 
@@ -172,6 +180,8 @@ export class RecommendationEngine {
 
   static async generateRecommendations(userId: string, profile: UserProfile): Promise<ToolRecommendation[]> {
     try {
+      console.log('Generating recommendations for user:', userId, 'with profile:', profile);
+      
       // Fetch all tools
       const { data: tools, error } = await supabase
         .from('tools')
@@ -189,6 +199,8 @@ export class RecommendationEngine {
 
       if (!tools) return [];
 
+      console.log('Found', tools.length, 'active tools');
+
       // Calculate scores and generate recommendations
       const recommendations: ToolRecommendation[] = tools
         .map(tool => {
@@ -202,9 +214,14 @@ export class RecommendationEngine {
             category: tool.categories?.name || 'Uncategorized'
           };
         })
-        .filter(rec => rec.score > 30) // Only recommend tools with decent relevance
+        .filter(rec => {
+          console.log('Tool', rec.tool.name, 'scored', rec.score, '- included:', rec.score > 30);
+          return rec.score > 30;
+        }) // Only recommend tools with decent relevance
         .sort((a, b) => b.score - a.score)
         .slice(0, 8); // Top 8 recommendations
+
+      console.log('Generated', recommendations.length, 'recommendations:', recommendations.map(r => ({ name: r.tool.name, score: r.score })));
 
       // Store recommendations in database
       if (recommendations.length > 0) {
@@ -223,7 +240,7 @@ export class RecommendationEngine {
           .eq('user_id', userId);
 
         // Insert new recommendations
-        await supabase
+        const { error: insertError } = await supabase
           .from('tool_recommendations')
           .insert(recommendationInserts);
       }
