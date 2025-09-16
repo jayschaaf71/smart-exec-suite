@@ -501,6 +501,7 @@ export type Database = {
           id: string
           implementation_guide: string | null
           integrations: string[] | null
+          is_quick_win: boolean | null
           logo_url: string | null
           name: string
           popularity_score: number | null
@@ -508,6 +509,7 @@ export type Database = {
           pricing_model: string | null
           pros: string[] | null
           setup_difficulty: string | null
+          setup_time: string | null
           status: string | null
           target_company_sizes: string[] | null
           target_industries: string[] | null
@@ -528,6 +530,7 @@ export type Database = {
           id?: string
           implementation_guide?: string | null
           integrations?: string[] | null
+          is_quick_win?: boolean | null
           logo_url?: string | null
           name: string
           popularity_score?: number | null
@@ -535,6 +538,7 @@ export type Database = {
           pricing_model?: string | null
           pros?: string[] | null
           setup_difficulty?: string | null
+          setup_time?: string | null
           status?: string | null
           target_company_sizes?: string[] | null
           target_industries?: string[] | null
@@ -555,6 +559,7 @@ export type Database = {
           id?: string
           implementation_guide?: string | null
           integrations?: string[] | null
+          is_quick_win?: boolean | null
           logo_url?: string | null
           name?: string
           popularity_score?: number | null
@@ -562,6 +567,7 @@ export type Database = {
           pricing_model?: string | null
           pros?: string[] | null
           setup_difficulty?: string | null
+          setup_time?: string | null
           status?: string | null
           target_company_sizes?: string[] | null
           target_industries?: string[] | null
@@ -610,6 +616,47 @@ export type Database = {
             columns: ["achievement_id"]
             isOneToOne: false
             referencedRelation: "achievements"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_analytics: {
+        Row: {
+          created_at: string | null
+          id: string
+          metadata: Json | null
+          metric_date: string | null
+          metric_name: string
+          metric_value: number
+          tool_id: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          metadata?: Json | null
+          metric_date?: string | null
+          metric_name: string
+          metric_value: number
+          tool_id?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          metadata?: Json | null
+          metric_date?: string | null
+          metric_name?: string
+          metric_value?: number
+          tool_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_analytics_tool_id_fkey"
+            columns: ["tool_id"]
+            isOneToOne: false
+            referencedRelation: "tools"
             referencedColumns: ["id"]
           },
         ]
@@ -973,6 +1020,56 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "user_tool_interactions_tool_id_fkey"
+            columns: ["tool_id"]
+            isOneToOne: false
+            referencedRelation: "tools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_tool_progress: {
+        Row: {
+          completed_at: string | null
+          created_at: string | null
+          id: string
+          notes: string | null
+          progress_percentage: number | null
+          started_at: string | null
+          status: string | null
+          time_invested: number | null
+          tool_id: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string | null
+          id?: string
+          notes?: string | null
+          progress_percentage?: number | null
+          started_at?: string | null
+          status?: string | null
+          time_invested?: number | null
+          tool_id?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string | null
+          id?: string
+          notes?: string | null
+          progress_percentage?: number | null
+          started_at?: string | null
+          status?: string | null
+          time_invested?: number | null
+          tool_id?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_tool_progress_tool_id_fkey"
             columns: ["tool_id"]
             isOneToOne: false
             referencedRelation: "tools"

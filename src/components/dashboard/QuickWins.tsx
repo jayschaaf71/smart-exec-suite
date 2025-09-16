@@ -46,11 +46,11 @@ export function QuickWins() {
     
     try {
       const { data } = await supabase
-        .from('user_tool_interactions')
+        .from('user_tool_progress')
         .select('tool_id')
         .eq('user_id', user.id)
-        .eq('interaction_type', 'completed');
-      
+        .eq('status', 'completed');
+        
       setImplementedTools(data?.map(d => d.tool_id) || []);
     } catch (error) {
       console.error('Error loading implemented tools:', error);
@@ -62,25 +62,70 @@ export function QuickWins() {
     
     setLoading(true);
     try {
-      // Get user profile for personalization
-      const { data: profile } = await supabase
+      // Get user profile with fallback to mock data for demo
+      let profile;
+      const { data: userProfile } = await supabase
         .from('profiles')
         .select('*')
         .eq('user_id', user.id)
         .maybeSingle();
+        
+      if (userProfile) {
+        profile = userProfile;
+      } else {
+        // Mock profile for demo user or when no profile exists
+        profile = {
+          role: 'CEO',
+          industry: 'Technology',
+          ai_experience: 'beginner',
+          company_size: '50-250',
+          goals: ['increase_productivity', 'improve_team_efficiency']
+        };
+      }
 
-      // Get tools suitable for quick wins
+      // Get active tools suitable for quick wins (expanded criteria for better results)
       const { data: tools } = await supabase
         .from('tools')
         .select('*')
         .eq('status', 'active')
-        .in('setup_difficulty', ['easy'])
-        .in('time_to_value', ['minutes', 'hours']);
+        .in('setup_difficulty', ['easy', 'beginner'])
+        .in('time_to_value', ['minutes', 'hours', 'fast']);
 
-      if (!tools || !profile) return;
-
-      // Calculate quick win scores
-      const quickWinCandidates = tools
+      if (!tools?.length) {
+        // If no tools match strict criteria, get any active tools
+        const { data: allTools } = await supabase
+          .from('tools')
+          .select('*')
+          .eq('status', 'active')
+          .limit(10);
+        
+        if (allTools?.length) {
+          const quickWinItems = allTools
+            .slice(0, 3)
+            .map(tool => ({
+              tool,
+              score: 75, // Default good score
+              reason: 'Recommended AI tool for your role',
+              timeToImplement: getTimeToImplement(tool),
+              businessImpact: getBusinessImpact(tool, profile)
+            }));
+          setQuickWins(quickWinItems);
+        }
+        return;
+      }
+      
+      // Filter and score tools based on user profile
+      const quickWinItems = tools
+        .filter(tool => {
+          // Filter by role compatibility (more permissive)
+          const roleMatch = !tool.target_roles?.length || 
+                           tool.target_roles?.includes(profile.role) || 
+                           tool.target_roles?.includes('all') ||
+                           tool.target_roles?.includes('CEO') ||
+                           tool.target_roles?.includes('Manager');
+          
+          return roleMatch;
+        })
         .map(tool => ({
           tool,
           score: calculateQuickWinScore(tool, profile),
@@ -88,11 +133,10 @@ export function QuickWins() {
           timeToImplement: getTimeToImplement(tool),
           businessImpact: getBusinessImpact(tool, profile)
         }))
-        .filter(qw => qw.score > 60)
         .sort((a, b) => b.score - a.score)
         .slice(0, 3);
-
-      setQuickWins(quickWinCandidates);
+      
+      setQuickWins(quickWinItems);
     } catch (error) {
       console.error('Error loading quick wins:', error);
     } finally {
@@ -169,51 +213,87 @@ export function QuickWins() {
 
   const handleStartImplementation = async (toolId: string) => {
     if (!user) return;
-
+    
     try {
       await supabase
-        .from('user_tool_interactions')
+        .from('user_tool_progress')
         .upsert({
           user_id: user.id,
           tool_id: toolId,
-          interaction_type: 'implementing',
-          updated_at: new Date().toISOString()
-        }, {
-          onConflict: 'user_id,tool_id'
+          status: 'started',
+          progress_percentage: 10,
+          started_at: new Date().toISOString(),
+          notes: 'Started implementation from Quick Wins'
+        }, { 
+          onConflict: 'user_id,tool_id' 
         });
-
+      
+      // Track analytics
+      await supabase
+        .from('user_analytics')
+        .insert({
+          user_id: user.id,
+          metric_name: 'tool_started',
+          metric_value: 1,
+          tool_id: toolId,
+          metadata: { source: 'quick_wins' }
+        });
+      
       toast({
-        title: "Implementation started!",
-        description: "Good luck with your quick win implementation.",
+        title: "Implementation Started",
+        description: "You've started implementing this tool. Track your progress in the Progress section.",
       });
     } catch (error) {
       console.error('Error starting implementation:', error);
+      toast({
+        title: "Error",
+        description: "Failed to start implementation. Please try again.",
+        variant: "destructive",
+      });
     }
   };
 
   const handleMarkComplete = async (toolId: string) => {
     if (!user) return;
-
+    
     try {
       await supabase
-        .from('user_tool_interactions')
+        .from('user_tool_progress')
         .upsert({
           user_id: user.id,
           tool_id: toolId,
-          interaction_type: 'completed',
-          updated_at: new Date().toISOString()
-        }, {
-          onConflict: 'user_id,tool_id'
+          status: 'completed',
+          progress_percentage: 100,
+          completed_at: new Date().toISOString(),
+          notes: 'Completed implementation from Quick Wins'
+        }, { 
+          onConflict: 'user_id,tool_id' 
         });
-
-      setImplementedTools(prev => [...prev, toolId]);
+      
+      // Track analytics
+      await supabase
+        .from('user_analytics')
+        .insert({
+          user_id: user.id,
+          metric_name: 'tool_completed',
+          metric_value: 1,
+          tool_id: toolId,
+          metadata: { source: 'quick_wins' }
+        });
+      
+      setImplementedTools([...implementedTools, toolId]);
       
       toast({
-        title: "Congratulations! 🎉",
-        description: "You've completed your first AI tool implementation!",
+        title: "Congratulations!",
+        description: "You've successfully implemented this tool!",
       });
     } catch (error) {
       console.error('Error marking complete:', error);
+      toast({
+        title: "Error",
+        description: "Failed to mark as complete. Please try again.",
+        variant: "destructive",
+      });
     }
   };
 
