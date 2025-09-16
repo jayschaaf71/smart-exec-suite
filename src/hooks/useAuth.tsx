@@ -17,40 +17,25 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  // BYPASS AUTH FOR TESTING - Create a mock user
-  const mockUser = {
-    id: '550e8400-e29b-41d4-a716-446655440000',
-    email: 'test@example.com',
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-    aud: 'authenticated',
-    role: 'authenticated',
-    user_metadata: { full_name: 'Test User' },
-    app_metadata: {}
-  } as User;
-
-  const [user, setUser] = useState<User | null>(mockUser);
+  const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // BYPASS: Don't override mock user for testing
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
-        // Don't override mock user
-        // setSession(session);
-        // setUser(session?.user ?? null);
-        // setLoading(false);
+        setSession(session);
+        setUser(session?.user ?? null);
+        setLoading(false);
       }
     );
 
     // THEN check for existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
-      // Don't override mock user
-      // setSession(session);
-      // setUser(session?.user ?? null);
-      // setLoading(false);
+      setSession(session);
+      setUser(session?.user ?? null);
+      setLoading(false);
     });
 
     return () => subscription.unsubscribe();

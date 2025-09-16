@@ -21,6 +21,8 @@ import { EnterpriseFeatures } from '@/components/enterprise/EnterpriseFeatures';
 import { SystemHealth } from '@/components/system/SystemHealth';
 import { ToolLibrary } from '@/components/tools/ToolLibrary';
 import { Analytics } from '@/utils/analytics';
+import { DailyAINews } from '@/components/daily-news/DailyAINews';
+import { CommunicationHub } from '@/components/communication/CommunicationHub';
 import { 
   Star, 
   TrendingUp, 
@@ -265,9 +267,14 @@ export default function Dashboard() {
             </Card>
           </div>
 
+          {/* Daily AI News */}
+          <div className="mb-8">
+            <DailyAINews />
+          </div>
+
           {/* Main Tabs */}
           <Tabs defaultValue="recommendations" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-4 lg:grid-cols-12">
+            <TabsList className="grid w-full grid-cols-4 lg:grid-cols-13">
               <TabsTrigger value="recommendations">Recommended</TabsTrigger>
               <TabsTrigger value="library">Library</TabsTrigger>
               <TabsTrigger value="quickwins">Quick Wins</TabsTrigger>
@@ -278,6 +285,7 @@ export default function Dashboard() {
               <TabsTrigger value="integrations">Export</TabsTrigger>
               <TabsTrigger value="enterprise">Enterprise</TabsTrigger>
               <TabsTrigger value="system">System</TabsTrigger>
+              <TabsTrigger value="communications">Community</TabsTrigger>
               <TabsTrigger value="notifications">Notifications</TabsTrigger>
               <TabsTrigger value="profile">Profile</TabsTrigger>
             </TabsList>
@@ -320,6 +328,10 @@ export default function Dashboard() {
             
             <TabsContent value="system">
               <SystemHealth />
+            </TabsContent>
+            
+            <TabsContent value="communications">
+              <CommunicationHub />
             </TabsContent>
             
             <TabsContent value="notifications">

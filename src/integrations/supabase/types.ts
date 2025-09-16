@@ -91,6 +91,42 @@ export type Database = {
           },
         ]
       }
+      daily_ai_news: {
+        Row: {
+          category: string
+          created_at: string
+          id: string
+          importance: string
+          summary: string
+          title: string
+          updated_at: string
+          url: string | null
+          user_id: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          id?: string
+          importance: string
+          summary: string
+          title: string
+          updated_at?: string
+          url?: string | null
+          user_id: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          id?: string
+          importance?: string
+          summary?: string
+          title?: string
+          updated_at?: string
+          url?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       implementation_guides: {
         Row: {
           created_at: string
