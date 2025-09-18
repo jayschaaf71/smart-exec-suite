@@ -39,6 +39,10 @@ interface AssessmentData {
   };
 }
 
+interface EnhancedAssessmentProps {
+  onComplete?: () => void;
+}
+
 const AI_TOOLS_OPTIONS = [
   'ChatGPT', 'Claude', 'Perplexity', 'Midjourney', 'DALL-E', 'Notion AI',
   'Grammarly', 'Jasper', 'Copy.ai', 'Otter.ai', 'Calendly AI', 'Slack AI',
@@ -68,7 +72,7 @@ const CHALLENGES = [
   'Measuring ROI'
 ];
 
-export function EnhancedAssessment() {
+export function EnhancedAssessment({ onComplete }: EnhancedAssessmentProps = {}) {
   const { toast } = useToast();
   const [currentStep, setCurrentStep] = useState(1);
   const [assessmentData, setAssessmentData] = useState<AssessmentData>({
@@ -168,8 +172,12 @@ export function EnhancedAssessment() {
         description: "Your personalized recommendations are being prepared."
       });
 
-      // Redirect to personalized onboarding
-      window.location.href = '/onboarding';
+      // Call onComplete callback if provided, otherwise redirect
+      if (onComplete) {
+        onComplete();
+      } else {
+        window.location.href = '/onboarding';
+      }
       
     } catch (error) {
       console.error('Error saving assessment:', error);

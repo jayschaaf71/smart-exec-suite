@@ -23,6 +23,7 @@ import { ToolLibrary } from '@/components/tools/ToolLibrary';
 import { Analytics } from '@/utils/analytics';
 import { DailyAINews } from '@/components/daily-news/DailyAINews';
 import { CommunicationHub } from '@/components/communication/CommunicationHub';
+import { QuickAccess } from '@/components/navigation/QuickAccess';
 import { 
   Star, 
   TrendingUp, 
@@ -267,9 +268,14 @@ export default function Dashboard() {
             </Card>
           </div>
 
-          {/* Daily AI News */}
-          <div className="mb-8">
-            <DailyAINews />
+          {/* Quick Access & Daily AI News */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+            <div className="lg:col-span-1">
+              <QuickAccess />
+            </div>
+            <div className="lg:col-span-2">
+              <DailyAINews />
+            </div>
           </div>
 
           {/* Main Tabs */}

@@ -17,6 +17,10 @@ import Dashboard from "./pages/Dashboard";
 import UserManagement from "./pages/UserManagement";
 import AdminDashboard from "./pages/AdminDashboard";
 import NotFound from "./pages/NotFound";
+import Community from "./pages/Community";
+import Consulting from "./pages/Consulting";
+import IndustryNews from "./pages/IndustryNews";
+import Productivity from "./pages/Productivity";
 
 const queryClient = new QueryClient();
 
@@ -55,6 +59,26 @@ const App = () => (
             <Route path="/dashboard" element={
               <ProtectedRoute>
                 <Dashboard />
+              </ProtectedRoute>
+            } />
+            <Route path="/community" element={
+              <ProtectedRoute>
+                <Community />
+              </ProtectedRoute>
+            } />
+            <Route path="/consulting" element={
+              <ProtectedRoute>
+                <Consulting />
+              </ProtectedRoute>
+            } />
+            <Route path="/industry-updates" element={
+              <ProtectedRoute>
+                <IndustryNews />
+              </ProtectedRoute>
+            } />
+            <Route path="/productivity" element={
+              <ProtectedRoute>
+                <Productivity />
               </ProtectedRoute>
             } />
             <Route path="/profile" element={

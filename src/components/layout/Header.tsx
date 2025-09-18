@@ -29,30 +29,55 @@ export function Header() {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            <a 
-              href="#features" 
-              className="text-muted-foreground hover:text-foreground transition-smooth"
-            >
-              Features
-            </a>
-            <a 
-              href="#pricing" 
-              className="text-muted-foreground hover:text-foreground transition-smooth"
-            >
-              Pricing
-            </a>
-            <a 
-              href="#academy" 
-              className="text-muted-foreground hover:text-foreground transition-smooth"
-            >
-              Academy
-            </a>
-            <a 
-              href="#about" 
-              className="text-muted-foreground hover:text-foreground transition-smooth"
-            >
-              About
-            </a>
+            {user ? (
+              <>
+                <button 
+                  onClick={() => navigate('/community')}
+                  className="text-muted-foreground hover:text-foreground transition-smooth"
+                >
+                  Community
+                </button>
+                <button 
+                  onClick={() => navigate('/industry-updates')}
+                  className="text-muted-foreground hover:text-foreground transition-smooth"
+                >
+                  Updates
+                </button>
+                <button 
+                  onClick={() => navigate('/consulting')}
+                  className="text-muted-foreground hover:text-foreground transition-smooth"
+                >
+                  Consulting
+                </button>
+              </>
+            ) : (
+              <>
+                <a 
+                  href="#features" 
+                  className="text-muted-foreground hover:text-foreground transition-smooth"
+                >
+                  Features
+                </a>
+                <a 
+                  href="#pricing" 
+                  className="text-muted-foreground hover:text-foreground transition-smooth"
+                >
+                  Pricing
+                </a>
+                <a 
+                  href="#academy" 
+                  className="text-muted-foreground hover:text-foreground transition-smooth"
+                >
+                  Academy
+                </a>
+                <a 
+                  href="#about" 
+                  className="text-muted-foreground hover:text-foreground transition-smooth"
+                >
+                  About
+                </a>
+              </>
+            )}
           </nav>
 
           {/* Desktop Auth Buttons */}
@@ -114,30 +139,55 @@ export function Header() {
         {isMenuOpen && (
           <div className="md:hidden pb-4">
             <nav className="flex flex-col space-y-4">
-              <a 
-                href="#features" 
-                className="text-muted-foreground hover:text-foreground transition-smooth py-2"
-              >
-                Features
-              </a>
-              <a 
-                href="#pricing" 
-                className="text-muted-foreground hover:text-foreground transition-smooth py-2"
-              >
-                Pricing
-              </a>
-              <a 
-                href="#academy" 
-                className="text-muted-foreground hover:text-foreground transition-smooth py-2"
-              >
-                Academy
-              </a>
-              <a 
-                href="#about" 
-                className="text-muted-foreground hover:text-foreground transition-smooth py-2"
-              >
-                About
-              </a>
+              {user ? (
+                <>
+                  <button 
+                    onClick={() => navigate('/community')}
+                    className="text-muted-foreground hover:text-foreground transition-smooth py-2 text-left"
+                  >
+                    Community
+                  </button>
+                  <button 
+                    onClick={() => navigate('/industry-updates')}
+                    className="text-muted-foreground hover:text-foreground transition-smooth py-2 text-left"
+                  >
+                    Updates
+                  </button>
+                  <button 
+                    onClick={() => navigate('/consulting')}
+                    className="text-muted-foreground hover:text-foreground transition-smooth py-2 text-left"
+                  >
+                    Consulting
+                  </button>
+                </>
+              ) : (
+                <>
+                  <a 
+                    href="#features" 
+                    className="text-muted-foreground hover:text-foreground transition-smooth py-2"
+                  >
+                    Features
+                  </a>
+                  <a 
+                    href="#pricing" 
+                    className="text-muted-foreground hover:text-foreground transition-smooth py-2"
+                  >
+                    Pricing
+                  </a>
+                  <a 
+                    href="#academy" 
+                    className="text-muted-foreground hover:text-foreground transition-smooth py-2"
+                  >
+                    Academy
+                  </a>
+                  <a 
+                    href="#about" 
+                    className="text-muted-foreground hover:text-foreground transition-smooth py-2"
+                  >
+                    About
+                  </a>
+                </>
+              )}
               <div className="flex flex-col space-y-2 pt-4">
                 {user ? (
                   <>

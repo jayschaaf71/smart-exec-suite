@@ -19,7 +19,11 @@ interface ToolRecommendation {
   priority: number;
 }
 
-export function PersonalProductivity() {
+interface PersonalProductivityProps {
+  onComplete?: () => void;
+}
+
+export function PersonalProductivity({ onComplete }: PersonalProductivityProps = {}) {
   const { toast } = useToast();
   const [recommendations, setRecommendations] = useState<ToolRecommendation[]>([]);
   const [userProfile, setUserProfile] = useState<any>(null);
