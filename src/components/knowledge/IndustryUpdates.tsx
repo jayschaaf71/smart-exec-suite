@@ -37,19 +37,18 @@ export function IndustryUpdates() {
       const { data: profile } = await supabase
         .from('profiles')
         .select('*')
-        .eq('id', user.id)
-        .single();
+        .eq('user_id', user.id)
+        .maybeSingle();
 
       setUserProfile(profile);
 
-      // For now, use mock data based on user profile
-      // TODO: Replace with actual industry_updates table query once types are updated
+      // For now, use mock data until database is properly set up
       const mockUpdates = generateMockUpdates(profile?.role || 'CEO', profile?.industry || 'Technology');
       setUpdates(mockUpdates);
 
     } catch (error) {
       console.error('Error loading industry updates:', error);
-      // Fallback to mock data
+      // Final fallback to mock data
       const mockUpdates = generateMockUpdates('CEO', 'Technology');
       setUpdates(mockUpdates);
     } finally {

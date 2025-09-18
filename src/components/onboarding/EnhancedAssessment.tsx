@@ -123,8 +123,7 @@ export function EnhancedAssessment() {
       // Calculate AI knowledge score
       const knowledgeScore = calculateKnowledgeScore(assessmentData.aiKnowledge);
       
-      // For now, just store in localStorage until database types are updated
-      // TODO: Replace with actual database save once types are updated
+      // For now, store assessment data in localStorage until database is set up
       localStorage.setItem('assessmentData', JSON.stringify({
         user_id: user.id,
         ai_knowledge_score: knowledgeScore,
@@ -136,7 +135,7 @@ export function EnhancedAssessment() {
         completed_at: new Date().toISOString()
       }));
 
-      // Store activity allocations in localStorage too
+      // Save activity allocations to localStorage
       const activities = Object.entries(assessmentData.roleActivities);
       const activityAllocations = activities
         .filter(([, percentage]) => percentage > 0)
@@ -150,13 +149,27 @@ export function EnhancedAssessment() {
       
       localStorage.setItem('activityAllocations', JSON.stringify(activityAllocations));
 
+      // Update user profile with assessment data
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .update({
+          role: 'CEO', // Default for this demo
+          industry: assessmentData.industryContext.primaryIndustry,
+          company_size: assessmentData.industryContext.companySize,
+          ai_experience: assessmentData.aiKnowledge.confidenceLevel > 7 ? 'Advanced' : 
+                         assessmentData.aiKnowledge.confidenceLevel > 4 ? 'Intermediate' : 'Beginner'
+        })
+        .eq('user_id', user.id);
+
+      if (profileError) throw profileError;
+
       toast({
         title: "Assessment completed!",
         description: "Your personalized recommendations are being prepared."
       });
 
       // Redirect to personalized onboarding
-      window.location.href = '/onboarding/personalized';
+      window.location.href = '/onboarding';
       
     } catch (error) {
       console.error('Error saving assessment:', error);

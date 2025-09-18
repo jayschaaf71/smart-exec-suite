@@ -34,8 +34,7 @@ export function PersonalProductivity() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      // Get user assessment data from localStorage for now
-      // TODO: Replace with actual database query once types are updated
+      // Get user assessment data from localStorage
       const assessmentDataStr = localStorage.getItem('assessmentData');
       if (!assessmentDataStr) {
         window.location.href = '/assessment';
@@ -47,8 +46,8 @@ export function PersonalProductivity() {
       const { data: profile } = await supabase
         .from('profiles')
         .select('*')
-        .eq('id', user.id)
-        .single();
+        .eq('user_id', user.id)
+        .maybeSingle();
 
       setUserProfile({ ...assessment, ...profile });
 
@@ -234,8 +233,7 @@ export function PersonalProductivity() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      // For now, store in localStorage until database types are updated
-      // TODO: Replace with actual database save once types are updated
+      // For now, store in localStorage until database is set up
       const existingProgress = JSON.parse(localStorage.getItem('userToolProgress') || '[]');
       const newProgress = {
         user_id: user.id,
@@ -247,8 +245,6 @@ export function PersonalProductivity() {
       
       const updatedProgress = [...existingProgress.filter((p: any) => p.tool_id !== toolId), newProgress];
       localStorage.setItem('userToolProgress', JSON.stringify(updatedProgress));
-
-      // Error handling removed since we're using localStorage
 
       toast({
         title: "Tool added to your list!",
