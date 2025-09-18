@@ -274,21 +274,26 @@ export default function Dashboard() {
 
           {/* Main Tabs */}
           <Tabs defaultValue="recommendations" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-4 lg:grid-cols-13">
-              <TabsTrigger value="recommendations">Recommended</TabsTrigger>
-              <TabsTrigger value="library">Library</TabsTrigger>
-              <TabsTrigger value="quickwins">Quick Wins</TabsTrigger>
-              <TabsTrigger value="guides">Guides</TabsTrigger>
-              <TabsTrigger value="learning">Learning</TabsTrigger>
-              <TabsTrigger value="progress">Progress</TabsTrigger>
-              <TabsTrigger value="analytics">Analytics</TabsTrigger>
-              <TabsTrigger value="integrations">Export</TabsTrigger>
-              <TabsTrigger value="enterprise">Enterprise</TabsTrigger>
-              <TabsTrigger value="system">System</TabsTrigger>
-              <TabsTrigger value="communications">Community</TabsTrigger>
-              <TabsTrigger value="notifications">Notifications</TabsTrigger>
-              <TabsTrigger value="profile">Profile</TabsTrigger>
+            <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-1">
+              <TabsTrigger value="recommendations" className="text-xs">Recommended</TabsTrigger>
+              <TabsTrigger value="library" className="text-xs">Library</TabsTrigger>
+              <TabsTrigger value="quickwins" className="text-xs">Quick Wins</TabsTrigger>
+              <TabsTrigger value="guides" className="text-xs">Guides</TabsTrigger>
+              <TabsTrigger value="learning" className="text-xs">Learning</TabsTrigger>
+              <TabsTrigger value="progress" className="text-xs">Progress</TabsTrigger>
+              <TabsTrigger value="analytics" className="text-xs">Analytics</TabsTrigger>
+              <TabsTrigger value="communications" className="text-xs">Community</TabsTrigger>
             </TabsList>
+            
+            <div className="flex flex-wrap gap-2 mt-4">
+              <TabsList className="grid grid-cols-5 gap-1">
+                <TabsTrigger value="integrations" className="text-xs">Export</TabsTrigger>
+                <TabsTrigger value="enterprise" className="text-xs">Enterprise</TabsTrigger>
+                <TabsTrigger value="system" className="text-xs">System</TabsTrigger>
+                <TabsTrigger value="notifications" className="text-xs">Notifications</TabsTrigger>
+                <TabsTrigger value="profile" className="text-xs">Profile</TabsTrigger>
+              </TabsList>
+            </div>
             
             <TabsContent value="recommendations">
               <RecommendedTools />
