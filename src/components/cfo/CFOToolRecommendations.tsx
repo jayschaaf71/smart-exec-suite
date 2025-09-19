@@ -316,7 +316,7 @@ export function CFOToolRecommendations({ recommendations, onRefresh }: CFOToolRe
                         >
                           <ExternalLink className="h-4 w-4" />
                         </a>
-                      </a>
+                      </Button>
                     )}
                   </div>
 
