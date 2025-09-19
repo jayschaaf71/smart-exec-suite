@@ -20,11 +20,11 @@ export function Header() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           {/* Logo */}
-          <div className="flex items-center">
+          <div className="flex items-center py-2">
             <img 
               src={blackKnightLogo} 
               alt="Black Knight AI" 
-              className="h-20 w-auto"
+              className="h-12 w-auto"
             />
           </div>
 
