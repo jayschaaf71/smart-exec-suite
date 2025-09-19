@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
 import { LogIn, UserPlus, Menu, LogOut, LayoutDashboard } from 'lucide-react';
+import blackKnightLogo from '@/assets/black-knight-logo.png';
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -21,7 +22,7 @@ export function Header() {
           {/* Logo */}
           <div className="flex items-center">
             <img 
-              src="/lovable-uploads/65117502-c5fc-4d37-bc15-b1f5f625b12e.png" 
+              src={blackKnightLogo} 
               alt="Black Knight AI" 
               className="h-12 w-auto"
             />
