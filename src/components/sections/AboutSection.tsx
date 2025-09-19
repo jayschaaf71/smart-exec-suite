@@ -26,10 +26,10 @@ const values = [
 ];
 
 const stats = [
-  { number: "10,000+", label: "Active Users" },
-  { number: "500+", label: "Companies Served" },
-  { number: "95%", label: "Success Rate" },
-  { number: "24/7", label: "Expert Support" }
+  { number: "500+", label: "AI Tools Curated" },
+  { number: "24/7", label: "Expert Support" },
+  { number: "95%", label: "Implementation Success" },
+  { number: "100%", label: "Satisfaction Focused" }
 ];
 
 export function AboutSection() {

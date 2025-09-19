@@ -40,15 +40,15 @@ export function HeroSection() {
           <div className="flex flex-wrap justify-center items-center gap-8 mb-12 text-white/80">
             <div className="flex items-center">
               <Users className="mr-2 h-5 w-5 text-accent" />
-              <span className="text-sm font-medium">10,000+ Users</span>
+              <span className="text-sm font-medium">Expert-Curated Solutions</span>
             </div>
             <div className="flex items-center">
               <Zap className="mr-2 h-5 w-5 text-accent" />
-              <span className="text-sm font-medium">200+ AI Tools</span>
+              <span className="text-sm font-medium">500+ AI Tools</span>
             </div>
             <div className="flex items-center">
               <TrendingUp className="mr-2 h-5 w-5 text-accent" />
-              <span className="text-sm font-medium">45% Avg Productivity Gain</span>
+              <span className="text-sm font-medium">Proven ROI Frameworks</span>
             </div>
           </div>
 
@@ -70,14 +70,21 @@ export function HeroSection() {
 
           {/* Trust Indicators */}
           <div className="pt-16">
-            <p className="text-white/60 text-sm mb-6">Trusted by leading companies worldwide</p>
+            <p className="text-white/60 text-sm mb-6">Built for modern business leaders</p>
             <div className="flex flex-wrap justify-center items-center gap-8 opacity-60">
-              {/* Placeholder for company logos */}
-              <div className="h-8 w-24 bg-white/20 rounded"></div>
-              <div className="h-8 w-24 bg-white/20 rounded"></div>
-              <div className="h-8 w-24 bg-white/20 rounded"></div>
-              <div className="h-8 w-24 bg-white/20 rounded"></div>
-              <div className="h-8 w-24 bg-white/20 rounded"></div>
+              {/* Placeholder for feature highlights */}
+              <div className="h-8 w-24 bg-white/20 rounded flex items-center justify-center">
+                <span className="text-white/80 text-xs font-medium">Secure</span>
+              </div>
+              <div className="h-8 w-24 bg-white/20 rounded flex items-center justify-center">
+                <span className="text-white/80 text-xs font-medium">Scalable</span>
+              </div>
+              <div className="h-8 w-24 bg-white/20 rounded flex items-center justify-center">
+                <span className="text-white/80 text-xs font-medium">Expert-Led</span>
+              </div>
+              <div className="h-8 w-24 bg-white/20 rounded flex items-center justify-center">
+                <span className="text-white/80 text-xs font-medium">ROI-Focused</span>
+              </div>
             </div>
           </div>
         </div>
