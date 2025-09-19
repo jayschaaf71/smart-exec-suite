@@ -24,7 +24,7 @@ export function Header() {
             <img 
               src={blackKnightLogo} 
               alt="Black Knight AI" 
-              className="h-12 w-auto"
+              className="h-20 w-auto"
             />
           </div>
 
