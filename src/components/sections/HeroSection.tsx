@@ -18,7 +18,7 @@ export function HeroSection() {
           {/* Badge */}
           <div className="inline-flex items-center px-4 py-2 rounded-full bg-accent/10 border border-accent/20 text-sm font-medium text-accent mb-8">
             <CheckCircle className="mr-2 h-4 w-4" />
-            Trusted by 10,000+ executives
+            Trusted by forward-thinking executives
           </div>
 
           {/* Headline */}
