@@ -91,6 +91,92 @@ export type Database = {
           },
         ]
       }
+      cfo_assessments: {
+        Row: {
+          assessment_score: number | null
+          company_profile: Json
+          created_at: string | null
+          current_stack: Json
+          goals: Json
+          id: string
+          pain_points: Json
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          assessment_score?: number | null
+          company_profile: Json
+          created_at?: string | null
+          current_stack: Json
+          goals: Json
+          id?: string
+          pain_points: Json
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          assessment_score?: number | null
+          company_profile?: Json
+          created_at?: string | null
+          current_stack?: Json
+          goals?: Json
+          id?: string
+          pain_points?: Json
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      cfo_tool_recommendations: {
+        Row: {
+          created_at: string | null
+          estimated_roi_percentage: number | null
+          id: string
+          implementation_guide: string | null
+          implementation_priority: number | null
+          industry_relevance_score: number | null
+          recommended_timeline: string | null
+          setup_complexity: string | null
+          tool_id: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          estimated_roi_percentage?: number | null
+          id?: string
+          implementation_guide?: string | null
+          implementation_priority?: number | null
+          industry_relevance_score?: number | null
+          recommended_timeline?: string | null
+          setup_complexity?: string | null
+          tool_id?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          estimated_roi_percentage?: number | null
+          id?: string
+          implementation_guide?: string | null
+          implementation_priority?: number | null
+          industry_relevance_score?: number | null
+          recommended_timeline?: string | null
+          setup_complexity?: string | null
+          tool_id?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cfo_tool_recommendations_tool_id_fkey"
+            columns: ["tool_id"]
+            isOneToOne: false
+            referencedRelation: "tools"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       daily_ai_news: {
         Row: {
           category: string
@@ -484,6 +570,59 @@ export type Database = {
           tool_id?: string | null
         }
         Relationships: []
+      }
+      tool_implementations: {
+        Row: {
+          completed_at: string | null
+          created_at: string | null
+          id: string
+          implementation_notes: string | null
+          progress_percentage: number | null
+          roi_achieved_percentage: number | null
+          started_at: string | null
+          status: string | null
+          time_invested_hours: number | null
+          tool_id: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string | null
+          id?: string
+          implementation_notes?: string | null
+          progress_percentage?: number | null
+          roi_achieved_percentage?: number | null
+          started_at?: string | null
+          status?: string | null
+          time_invested_hours?: number | null
+          tool_id?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string | null
+          id?: string
+          implementation_notes?: string | null
+          progress_percentage?: number | null
+          roi_achieved_percentage?: number | null
+          started_at?: string | null
+          status?: string | null
+          time_invested_hours?: number | null
+          tool_id?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tool_implementations_tool_id_fkey"
+            columns: ["tool_id"]
+            isOneToOne: false
+            referencedRelation: "tools"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       tool_recommendations: {
         Row: {
@@ -1024,6 +1163,47 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      user_success_metrics: {
+        Row: {
+          created_at: string | null
+          id: string
+          measurement_date: string | null
+          metric_name: string
+          metric_value: number
+          notes: string | null
+          tool_id: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          measurement_date?: string | null
+          metric_name: string
+          metric_value: number
+          notes?: string | null
+          tool_id?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          measurement_date?: string | null
+          metric_name?: string
+          metric_value?: number
+          notes?: string | null
+          tool_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_success_metrics_tool_id_fkey"
+            columns: ["tool_id"]
+            isOneToOne: false
+            referencedRelation: "tools"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_tool_interactions: {
         Row: {
