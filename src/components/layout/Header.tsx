@@ -33,6 +33,12 @@ export function Header() {
             {user ? (
               <>
                 <button 
+                  onClick={() => navigate('/cfo-dashboard')}
+                  className="text-muted-foreground hover:text-foreground transition-smooth"
+                >
+                  CFO Dashboard
+                </button>
+                <button 
                   onClick={() => navigate('/community')}
                   className="text-muted-foreground hover:text-foreground transition-smooth"
                 >
@@ -142,6 +148,12 @@ export function Header() {
             <nav className="flex flex-col space-y-4">
               {user ? (
                 <>
+                  <button 
+                    onClick={() => navigate('/cfo-dashboard')}
+                    className="text-muted-foreground hover:text-foreground transition-smooth py-2 text-left"
+                  >
+                    CFO Dashboard
+                  </button>
                   <button 
                     onClick={() => navigate('/community')}
                     className="text-muted-foreground hover:text-foreground transition-smooth py-2 text-left"

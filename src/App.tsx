@@ -21,6 +21,7 @@ import Community from "./pages/Community";
 import Consulting from "./pages/Consulting";
 import IndustryNews from "./pages/IndustryNews";
 import Productivity from "./pages/Productivity";
+import CFODashboard from "./pages/CFODashboard";
 
 const queryClient = new QueryClient();
 
@@ -79,6 +80,11 @@ const App = () => (
             <Route path="/productivity" element={
               <ProtectedRoute>
                 <Productivity />
+              </ProtectedRoute>
+            } />
+            <Route path="/cfo-dashboard" element={
+              <ProtectedRoute>
+                <CFODashboard />
               </ProtectedRoute>
             } />
             <Route path="/profile" element={
