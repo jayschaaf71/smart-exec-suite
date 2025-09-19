@@ -169,12 +169,12 @@ export function CFOAssessment({ onComplete }: CFOAssessmentProps) {
                   <Label htmlFor="manufacturing">Manufacturing</Label>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="saas" id="saas" />
-                  <Label htmlFor="saas">SaaS/Technology</Label>
-                </div>
-                <div className="flex items-center space-x-2">
                   <RadioGroupItem value="healthcare" id="healthcare" />
                   <Label htmlFor="healthcare">Healthcare</Label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="financial" id="financial" />
+                  <Label htmlFor="financial">Financial Services</Label>
                 </div>
                 <div className="flex items-center space-x-2">
                   <RadioGroupItem value="retail" id="retail" />
