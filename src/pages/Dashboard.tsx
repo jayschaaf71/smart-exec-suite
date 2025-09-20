@@ -137,13 +137,32 @@ export default function Dashboard() {
     );
   }
 
-  if (!profile) {
+  if (!profile || !profile.role) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Card className="max-w-md">
-          <CardContent className="p-6 text-center">
-            <p className="text-muted-foreground mb-4">Profile not found. Please complete onboarding.</p>
-            <Button onClick={() => navigate('/onboarding')}>Complete Setup</Button>
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-blue-50">
+        <Card className="max-w-lg shadow-lg">
+          <CardContent className="p-8 text-center">
+            <div className="mb-6">
+              <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Target className="w-8 h-8 text-primary" />
+              </div>
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">Welcome to Black Knight AI!</h2>
+              <p className="text-gray-600 mb-4">
+                Complete your personalized assessment to get tailored AI tool recommendations for your role and industry.
+              </p>
+              <div className="text-sm text-muted-foreground mb-6">
+                <p>✨ Get personalized recommendations</p>
+                <p>🎯 See tools specific to your role</p>
+                <p>📊 Track your AI implementation progress</p>
+              </div>
+            </div>
+            <Button 
+              onClick={() => navigate('/assessment')} 
+              size="lg"
+              className="w-full"
+            >
+              Start Your Assessment
+            </Button>
           </CardContent>
         </Card>
       </div>

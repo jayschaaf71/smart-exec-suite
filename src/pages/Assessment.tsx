@@ -247,10 +247,14 @@ export default function Assessment() {
 
       toast({
         title: "Assessment Complete! 🎉",
-        description: "Your personalized recommendations are ready!"
+        description: "Your personalized recommendations are ready! Redirecting to your dashboard...",
+        duration: 3000
       });
 
-      navigate('/dashboard');
+      // Brief delay to show success message, then redirect
+      setTimeout(() => {
+        navigate('/dashboard', { replace: true });
+      }, 1500);
     } catch (error) {
       console.error('Error saving assessment:', error);
       toast({
@@ -459,7 +463,23 @@ export default function Assessment() {
               {Math.round(progress)}% complete
             </span>
           </div>
-          <Progress value={progress} className="h-2" />
+          <Progress value={progress} className="h-3 bg-slate-200" />
+          <div className="flex justify-between mt-2">
+            {steps.map((_, index) => (
+              <div 
+                key={index}
+                className={`text-xs px-2 py-1 rounded ${
+                  index + 1 < currentStep 
+                    ? 'bg-green-100 text-green-700' 
+                    : index + 1 === currentStep 
+                    ? 'bg-primary/10 text-primary'
+                    : 'bg-gray-100 text-gray-500'
+                }`}
+              >
+                {index + 1 < currentStep ? '✓' : index + 1}
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* Main Content */}
@@ -495,7 +515,40 @@ export default function Assessment() {
             Previous
           </Button>
 
-          <div className="flex space-x-2">
+          <div className="flex items-center gap-4">
+            <span className="text-sm text-gray-600">
+              {canProceed() ? 'Ready to continue' : 'Please complete this step'}
+            </span>
+            {currentStep === steps.length ? (
+              <Button 
+                onClick={handleComplete}
+                disabled={!canProceed() || loading}
+                size="lg"
+                className="min-w-32"
+              >
+                {loading ? (
+                  <div className="flex items-center gap-2">
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                    Completing...
+                  </div>
+                ) : (
+                  'Complete Assessment'
+                )}
+              </Button>
+            ) : (
+              <Button
+                onClick={handleNext}
+                disabled={!canProceed()}
+                size="lg"
+                className="flex items-center gap-2 min-w-32"
+              >
+                Next Step
+                <ArrowRight className="w-4 h-4" />
+              </Button>
+            )}
+          </div>
+
+          <div className="hidden space-x-2">
             {steps.map((_, index) => (
               <div
                 key={index}
