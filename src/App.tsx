@@ -22,6 +22,7 @@ import Consulting from "./pages/Consulting";
 import IndustryNews from "./pages/IndustryNews";
 import Productivity from "./pages/Productivity";
 import CFODashboard from "./pages/CFODashboard";
+import Marketplace from "./pages/Marketplace";
 
 const queryClient = new QueryClient();
 
@@ -87,6 +88,7 @@ const App = () => (
                 <CFODashboard />
               </ProtectedRoute>
             } />
+            <Route path="/marketplace" element={<Marketplace />} />
             <Route path="/profile" element={
               <ProtectedRoute>
                 <UserManagement />

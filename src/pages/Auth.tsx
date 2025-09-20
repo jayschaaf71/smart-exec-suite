@@ -25,7 +25,8 @@ export default function Auth() {
 
   useEffect(() => {
     if (user) {
-      navigate('/onboarding');
+      // Check if user has completed assessment, if not redirect to assessment
+      navigate('/assessment');
     }
   }, [user, navigate]);
 

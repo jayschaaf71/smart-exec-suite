@@ -58,12 +58,17 @@ export function HeroSection() {
               variant="hero" 
               size="xl" 
               className="min-w-[200px]"
-              onClick={() => navigate(user ? '/onboarding' : '/auth')}
+              onClick={() => navigate(user ? '/assessment' : '/auth')}
             >
               {user ? 'Continue Assessment' : 'Start Free Assessment'}
               <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
-            <Button variant="premium" size="xl" className="min-w-[200px]">
+            <Button 
+              variant="premium" 
+              size="xl" 
+              className="min-w-[200px]"
+              onClick={() => navigate('/marketplace')}
+            >
               View Tool Marketplace
             </Button>
           </div>
