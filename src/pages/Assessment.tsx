@@ -548,41 +548,6 @@ export default function Assessment() {
             )}
           </div>
 
-          <div className="hidden space-x-2">
-            {steps.map((_, index) => (
-              <div
-                key={index}
-                className={`w-3 h-3 rounded-full ${
-                  index + 1 === currentStep
-                    ? 'bg-primary'
-                    : index + 1 < currentStep
-                    ? 'bg-primary/50'
-                    : 'bg-slate-200'
-                }`}
-              />
-            ))}
-          </div>
-
-          {currentStep === steps.length ? (
-            <Button
-              onClick={handleComplete}
-              disabled={!canProceed() || loading}
-              className="flex items-center gap-2"
-              size="lg"
-            >
-              {loading ? 'Completing...' : 'Complete Assessment'}
-              <CheckCircle className="w-4 h-4" />
-            </Button>
-          ) : (
-            <Button
-              onClick={handleNext}
-              disabled={!canProceed()}
-              className="flex items-center gap-2"
-            >
-              Next
-              <ArrowRight className="w-4 h-4" />
-            </Button>
-          )}
         </div>
 
         {/* Selected Goals Summary */}
