@@ -9,6 +9,7 @@ import { Separator } from '@/components/ui/separator';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
 import { Chrome, Eye, EyeOff, Mail, Lock, User, ArrowLeft } from 'lucide-react';
+import blackKnightLogo from '@/assets/black-knight-logo-updated.png';
 
 export default function Auth() {
   const navigate = useNavigate();
@@ -165,7 +166,7 @@ export default function Auth() {
         <CardHeader className="text-center">
           <div className="mx-auto mb-4">
             <img 
-              src="/lovable-uploads/65117502-c5fc-4d37-bc15-b1f5f625b12e.png" 
+              src={blackKnightLogo} 
               alt="Black Knight AI" 
               className="h-16 w-auto mx-auto"
             />
