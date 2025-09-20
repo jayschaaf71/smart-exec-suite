@@ -141,31 +141,30 @@ export function DailyAINews() {
           <div className="space-y-4">
             {news.map((item, index) => (
               <div key={item.id}>
-                <div className="space-y-2">
-                  <div className="flex items-start justify-between gap-2">
-                    <h3 className="font-medium text-sm leading-tight flex-1">{item.title}</h3>
-                    <div className="flex items-center gap-1 flex-shrink-0">
-                      <Badge variant={getImportanceColor(item.importance)} className="text-xs">
-                        {getImportanceIcon(item.importance)}
-                        <span className="ml-1">{item.importance}</span>
-                      </Badge>
-                    </div>
-                  </div>
-                  <p className="text-sm text-muted-foreground leading-relaxed">{item.summary}</p>
-                  <div className="flex items-center justify-between">
-                    <Badge variant="outline" className="text-xs">
-                      {item.category}
-                    </Badge>
-                    {item.url && (
-                      <Button variant="ghost" size="sm" asChild>
-                        <a href={item.url} target="_blank" rel="noopener noreferrer">
-                          <ExternalLink className="h-3 w-3 mr-1" />
-                          Read more
-                        </a>
-                      </Button>
-                    )}
-                  </div>
-                </div>
+                 <div className="space-y-2 p-3 rounded-lg border border-transparent hover:border-accent-foreground/20 hover:bg-accent/50 transition-all cursor-pointer" 
+                      onClick={() => item.url && window.open(item.url, '_blank')}>
+                   <div className="flex items-start justify-between gap-2">
+                     <h3 className="font-medium text-sm leading-tight flex-1 hover:text-primary transition-colors">{item.title}</h3>
+                     <div className="flex items-center gap-1 flex-shrink-0">
+                       <Badge variant={getImportanceColor(item.importance)} className="text-xs">
+                         {getImportanceIcon(item.importance)}
+                         <span className="ml-1">{item.importance}</span>
+                       </Badge>
+                     </div>
+                   </div>
+                   <p className="text-sm text-muted-foreground leading-relaxed">{item.summary}</p>
+                   <div className="flex items-center justify-between">
+                     <Badge variant="outline" className="text-xs">
+                       {item.category}
+                     </Badge>
+                     {item.url && (
+                       <div className="flex items-center text-xs text-muted-foreground">
+                         <ExternalLink className="h-3 w-3 mr-1" />
+                         Click to read more
+                       </div>
+                     )}
+                   </div>
+                 </div>
                 {index < news.length - 1 && <Separator className="mt-4" />}
               </div>
             ))}

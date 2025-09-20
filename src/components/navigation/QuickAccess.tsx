@@ -19,7 +19,7 @@ export function QuickAccess() {
       title: "Industry Updates", 
       description: "Latest AI trends and industry developments",
       icon: TrendingUp,
-      path: "/industry-updates",
+      path: "/industry-news",
       color: "text-green-600",
       bgColor: "bg-green-50"
     },
@@ -50,22 +50,22 @@ export function QuickAccess() {
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {features.map((feature) => {
             const IconComponent = feature.icon;
             return (
               <Button
                 key={feature.path}
                 variant="ghost"
-                className="h-auto p-4 justify-start"
+                className="h-auto p-4 justify-start hover:bg-accent transition-colors cursor-pointer border border-transparent hover:border-accent-foreground/20"
                 onClick={() => navigate(feature.path)}
               >
-                <div className={`p-2 rounded-lg ${feature.bgColor} mr-3`}>
+                <div className={`p-2 rounded-lg ${feature.bgColor} mr-3 flex-shrink-0`}>
                   <IconComponent className={`w-5 h-5 ${feature.color}`} />
                 </div>
-                <div className="text-left">
-                  <div className="font-medium text-sm">{feature.title}</div>
-                  <div className="text-xs text-muted-foreground">
+                <div className="text-left flex-1">
+                  <div className="font-medium text-sm text-foreground">{feature.title}</div>
+                  <div className="text-xs text-muted-foreground line-clamp-2">
                     {feature.description}
                   </div>
                 </div>
