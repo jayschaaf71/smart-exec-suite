@@ -50,6 +50,42 @@ export type Database = {
         }
         Relationships: []
       }
+      ai_assessments: {
+        Row: {
+          ai_recommendations: Json
+          assessment_data: Json
+          assessment_type: string
+          confidence_score: number | null
+          created_at: string
+          id: string
+          status: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          ai_recommendations?: Json
+          assessment_data?: Json
+          assessment_type: string
+          confidence_score?: number | null
+          created_at?: string
+          id?: string
+          status?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          ai_recommendations?: Json
+          assessment_data?: Json
+          assessment_type?: string
+          confidence_score?: number | null
+          created_at?: string
+          id?: string
+          status?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       categories: {
         Row: {
           color: string | null
@@ -176,6 +212,179 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      communities: {
+        Row: {
+          category: string
+          created_at: string
+          created_by: string | null
+          description: string
+          id: string
+          is_public: boolean | null
+          member_count: number | null
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          created_by?: string | null
+          description: string
+          id?: string
+          is_public?: boolean | null
+          member_count?: number | null
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string
+          id?: string
+          is_public?: boolean | null
+          member_count?: number | null
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      community_memberships: {
+        Row: {
+          community_id: string
+          id: string
+          joined_at: string
+          role: string | null
+          user_id: string
+        }
+        Insert: {
+          community_id: string
+          id?: string
+          joined_at?: string
+          role?: string | null
+          user_id: string
+        }
+        Update: {
+          community_id?: string
+          id?: string
+          joined_at?: string
+          role?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_memberships_community_id_fkey"
+            columns: ["community_id"]
+            isOneToOne: false
+            referencedRelation: "communities"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      community_messages: {
+        Row: {
+          author_id: string
+          community_id: string
+          content: string
+          created_at: string
+          id: string
+          likes_count: number | null
+          message_type: string | null
+          parent_message_id: string | null
+          replies_count: number | null
+          updated_at: string
+        }
+        Insert: {
+          author_id: string
+          community_id: string
+          content: string
+          created_at?: string
+          id?: string
+          likes_count?: number | null
+          message_type?: string | null
+          parent_message_id?: string | null
+          replies_count?: number | null
+          updated_at?: string
+        }
+        Update: {
+          author_id?: string
+          community_id?: string
+          content?: string
+          created_at?: string
+          id?: string
+          likes_count?: number | null
+          message_type?: string | null
+          parent_message_id?: string | null
+          replies_count?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "community_messages_community_id_fkey"
+            columns: ["community_id"]
+            isOneToOne: false
+            referencedRelation: "communities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "community_messages_parent_message_id_fkey"
+            columns: ["parent_message_id"]
+            isOneToOne: false
+            referencedRelation: "community_messages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      consulting_services: {
+        Row: {
+          consultant_expertise: string[] | null
+          consultant_name: string
+          created_at: string
+          description: string
+          duration_weeks: number
+          id: string
+          is_active: boolean | null
+          next_availability: string | null
+          outcomes: string[] | null
+          price_range: string
+          rating: number | null
+          reviews_count: number | null
+          service_name: string
+          updated_at: string
+        }
+        Insert: {
+          consultant_expertise?: string[] | null
+          consultant_name: string
+          created_at?: string
+          description: string
+          duration_weeks: number
+          id?: string
+          is_active?: boolean | null
+          next_availability?: string | null
+          outcomes?: string[] | null
+          price_range: string
+          rating?: number | null
+          reviews_count?: number | null
+          service_name: string
+          updated_at?: string
+        }
+        Update: {
+          consultant_expertise?: string[] | null
+          consultant_name?: string
+          created_at?: string
+          description?: string
+          duration_weeks?: number
+          id?: string
+          is_active?: boolean | null
+          next_availability?: string | null
+          outcomes?: string[] | null
+          price_range?: string
+          rating?: number | null
+          reviews_count?: number | null
+          service_name?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       daily_ai_news: {
         Row: {
@@ -537,6 +746,56 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      service_bookings: {
+        Row: {
+          completed_at: string | null
+          consultant_notes: string | null
+          created_at: string
+          id: string
+          notes: string | null
+          preferred_start_date: string
+          scheduled_date: string | null
+          service_id: string
+          status: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          consultant_notes?: string | null
+          created_at?: string
+          id?: string
+          notes?: string | null
+          preferred_start_date: string
+          scheduled_date?: string | null
+          service_id: string
+          status?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          consultant_notes?: string | null
+          created_at?: string
+          id?: string
+          notes?: string | null
+          preferred_start_date?: string
+          scheduled_date?: string | null
+          service_id?: string
+          status?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_bookings_service_id_fkey"
+            columns: ["service_id"]
+            isOneToOne: false
+            referencedRelation: "consulting_services"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       tool_effectiveness_metrics: {
         Row: {

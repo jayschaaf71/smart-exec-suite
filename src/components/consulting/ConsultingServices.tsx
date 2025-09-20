@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Calendar, Clock, Star, Users, Target, CheckCircle } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Textarea } from '@/components/ui/textarea';
+import { Calendar, Clock, Star, Users, Target, CheckCircle, Brain, Zap, AlertCircle, TrendingUp } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
@@ -32,36 +34,51 @@ interface ServiceBooking {
   created_at: string;
 }
 
+interface AIAssessment {
+  id: string;
+  assessment_type: string;
+  ai_recommendations: any;
+  confidence_score: number;
+  status: string;
+  created_at: string;
+}
+
 export function ConsultingServices() {
   const { user } = useAuth();
   const { toast } = useToast();
   const [services, setServices] = useState<ConsultingService[]>([]);
   const [userBookings, setUserBookings] = useState<ServiceBooking[]>([]);
+  const [aiAssessment, setAiAssessment] = useState<AIAssessment | null>(null);
   const [loading, setLoading] = useState(true);
+  const [assessmentLoading, setAssessmentLoading] = useState(false);
+  const [showAssessment, setShowAssessment] = useState(false);
+  const [specificContext, setSpecificContext] = useState('');
 
   useEffect(() => {
     loadServices();
     if (user) {
       loadUserBookings();
+      loadUserAssessments();
     }
   }, [user]);
 
   const loadServices = async () => {
     try {
-      // For now, use mock data with IDs
-      const mockServices = generateDefaultServices().map((service, index) => ({
-        ...service,
-        id: `service-${index + 1}`
-      }));
-      setServices(mockServices);
+      const { data: servicesData, error } = await supabase
+        .from('consulting_services')
+        .select('*')
+        .eq('is_active', true)
+        .order('rating', { ascending: false });
+
+      if (error) throw error;
+      setServices(servicesData || []);
     } catch (error) {
       console.error('Error loading services:', error);
-      // Fallback to mock data
-      const mockServices = generateDefaultServices().map((service, index) => ({
-        ...service,
-        id: `service-${index + 1}`
-      }));
-      setServices(mockServices);
+      toast({
+        title: "Error loading services",
+        description: "Please try again.",
+        variant: "destructive"
+      });
     } finally {
       setLoading(false);
     }
@@ -71,11 +88,36 @@ export function ConsultingServices() {
     if (!user) return;
 
     try {
-      // For now, use empty array until database is set up
-      setUserBookings([]);
+      const { data: bookingsData, error } = await supabase
+        .from('service_bookings')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setUserBookings(bookingsData || []);
     } catch (error) {
       console.error('Error loading bookings:', error);
-      setUserBookings([]);
+    }
+  };
+
+  const loadUserAssessments = async () => {
+    if (!user) return;
+
+    try {
+      const { data: assessmentData, error } = await supabase
+        .from('ai_assessments')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('assessment_type', 'consulting')
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (error && error.code !== 'PGRST116') throw error;
+      setAiAssessment(assessmentData);
+    } catch (error) {
+      console.error('Error loading assessments:', error);
     }
   };
 
@@ -108,18 +150,21 @@ export function ConsultingServices() {
       const nextWeek = new Date();
       nextWeek.setDate(nextWeek.getDate() + 7);
 
-      const bookingData = {
-        id: Date.now().toString(),
-        service_id: serviceId,
-        user_id: user.id,
-        preferred_start_date: nextWeek.toISOString().split('T')[0],
-        status: 'pending' as const,
-        notes: 'Booking requested through platform',
-        created_at: new Date().toISOString()
-      };
+      const { data, error } = await supabase
+        .from('service_bookings')
+        .insert({
+          service_id: serviceId,
+          user_id: user.id,
+          preferred_start_date: nextWeek.toISOString().split('T')[0],
+          status: 'pending',
+          notes: 'Booking requested through platform'
+        })
+        .select()
+        .single();
 
-      // For now, just update local state
-      setUserBookings(prev => [...prev, bookingData]);
+      if (error) throw error;
+
+      setUserBookings(prev => [data, ...prev]);
 
       toast({
         title: "Consultation booked!",
@@ -136,76 +181,50 @@ export function ConsultingServices() {
     }
   };
 
-  const generateDefaultServices = (): Omit<ConsultingService, 'id'>[] => [
-    {
-      service_name: "AI Strategy Implementation",
-      description: "Comprehensive 12-week program to develop and execute your organization's AI transformation strategy",
-      price_range: "$25,000 - $50,000",
-      duration_weeks: 12,
-      consultant_name: "Dr. Amanda Liu",
-      consultant_expertise: ["AI Strategy", "Change Management", "ROI Optimization"],
-      rating: 4.9,
-      reviews_count: 47,
-      outcomes: [
-        "Custom AI roadmap aligned with business objectives",
-        "Team training and change management plan",
-        "Pilot project implementation with measurable ROI",
-        "Governance framework and risk mitigation strategy"
-      ],
-      next_availability: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
-    },
-    {
-      service_name: "Executive AI Leadership Program",
-      description: "Intensive 6-week executive coaching program focused on AI leadership and decision-making",
-      price_range: "$15,000 - $25,000",
-      duration_weeks: 6,
-      consultant_name: "Michael Rodriguez",
-      consultant_expertise: ["Executive Coaching", "AI Governance", "Digital Transformation"],
-      rating: 4.8,
-      reviews_count: 32,
-      outcomes: [
-        "Enhanced AI fluency and confidence",
-        "Strategic decision-making framework",
-        "Board-ready AI communication skills",
-        "Personal AI productivity optimization"
-      ],
-      next_availability: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
-    },
-    {
-      service_name: "AI ROI Assessment & Optimization",
-      description: "4-week deep-dive analysis of your current AI investments with optimization recommendations",
-      price_range: "$8,000 - $15,000",
-      duration_weeks: 4,
-      consultant_name: "Sarah Chen",
-      consultant_expertise: ["Financial Analysis", "AI Metrics", "Performance Optimization"],
-      rating: 4.9,
-      reviews_count: 28,
-      outcomes: [
-        "Comprehensive ROI analysis of existing AI initiatives",
-        "Cost optimization recommendations",
-        "Performance metrics dashboard",
-        "Future investment prioritization framework"
-      ],
-      next_availability: new Date(Date.now() + 21 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
-    },
-    {
-      service_name: "AI Risk & Compliance Framework",
-      description: "8-week program to establish comprehensive AI governance, risk management, and compliance protocols",
-      price_range: "$20,000 - $35,000",
-      duration_weeks: 8,
-      consultant_name: "James Patterson",
-      consultant_expertise: ["AI Ethics", "Compliance", "Risk Management", "Legal Framework"],
-      rating: 4.7,
-      reviews_count: 19,
-      outcomes: [
-        "AI governance framework and policies",
-        "Risk assessment and mitigation protocols",
-        "Compliance monitoring system",
-        "Ethics board establishment and training"
-      ],
-      next_availability: new Date(Date.now() + 28 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+  const generateAIAssessment = async () => {
+    if (!user) return;
+
+    setAssessmentLoading(true);
+    try {
+      // Get user profile for assessment
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('user_id', user.id)
+        .single();
+
+      if (profileError) throw profileError;
+
+      // Call the AI assessment edge function
+      const { data, error } = await supabase.functions.invoke('ai-assessment', {
+        body: {
+          assessmentType: 'consulting',
+          userProfile: profile,
+          specificContext: specificContext ? { additionalInfo: specificContext } : undefined
+        }
+      });
+
+      if (error) throw error;
+
+      setAiAssessment(data.assessment);
+      setShowAssessment(false);
+      
+      toast({
+        title: "AI Assessment Complete!",
+        description: `Assessment generated with ${Math.round(data.confidenceScore * 100)}% confidence.`,
+      });
+
+    } catch (error) {
+      console.error('Error generating assessment:', error);
+      toast({
+        title: "Assessment Failed",
+        description: "Please try again or contact support.",
+        variant: "destructive"
+      });
+    } finally {
+      setAssessmentLoading(false);
     }
-  ];
+  };
 
   if (loading) {
     return (
@@ -228,6 +247,110 @@ export function ConsultingServices() {
           Get personalized guidance from AI implementation experts to accelerate your transformation
         </p>
       </div>
+
+      {/* AI Assessment Section */}
+      <Card className="mb-8 bg-gradient-to-r from-blue-50 to-purple-50">
+        <CardHeader>
+          <CardTitle className="flex items-center">
+            <Brain className="w-6 h-6 mr-2 text-blue-600" />
+            AI-Powered Consulting Assessment
+          </CardTitle>
+          <CardDescription>
+            Get personalized consulting recommendations based on your role, industry, and specific needs
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {aiAssessment ? (
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <CheckCircle className="w-5 h-5 text-green-600" />
+                  <span className="font-medium">Assessment Complete</span>
+                  <Badge variant="secondary">
+                    {Math.round(aiAssessment.confidence_score * 100)}% Confidence
+                  </Badge>
+                </div>
+                <span className="text-sm text-muted-foreground">
+                  {new Date(aiAssessment.created_at).toLocaleDateString()}
+                </span>
+              </div>
+              
+              {aiAssessment.ai_recommendations?.summary && (
+                <div className="bg-white p-4 rounded-lg border">
+                  <h4 className="font-medium mb-2">Key Recommendations:</h4>
+                  <p className="text-sm text-muted-foreground">
+                    {aiAssessment.ai_recommendations.summary}
+                  </p>
+                </div>
+              )}
+
+              <div className="flex space-x-2">
+                <Dialog open={showAssessment} onOpenChange={setShowAssessment}>
+                  <DialogTrigger asChild>
+                    <Button variant="outline">
+                      <Zap className="w-4 h-4 mr-2" />
+                      Generate New Assessment
+                    </Button>
+                  </DialogTrigger>
+                </Dialog>
+              </div>
+            </div>
+          ) : (
+            <div className="text-center py-6">
+              <Brain className="w-12 h-12 text-blue-600 mx-auto mb-4" />
+              <h3 className="text-lg font-medium mb-2">No Assessment Yet</h3>
+              <p className="text-muted-foreground mb-4">
+                Generate a personalized AI assessment to get tailored consulting recommendations
+              </p>
+              <Dialog open={showAssessment} onOpenChange={setShowAssessment}>
+                <DialogTrigger asChild>
+                  <Button>
+                    <Brain className="w-4 h-4 mr-2" />
+                    Generate AI Assessment
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="max-w-md">
+                  <DialogHeader>
+                    <DialogTitle>AI Consulting Assessment</DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-4">
+                    <p className="text-sm text-muted-foreground">
+                      Our AI will analyze your profile and generate personalized consulting recommendations.
+                    </p>
+                    <div>
+                      <label className="text-sm font-medium">Additional Context (Optional)</label>
+                      <Textarea
+                        placeholder="Describe any specific challenges, goals, or context that would help personalize your assessment..."
+                        value={specificContext}
+                        onChange={(e) => setSpecificContext(e.target.value)}
+                        className="mt-1"
+                        rows={3}
+                      />
+                    </div>
+                    <Button 
+                      onClick={generateAIAssessment} 
+                      disabled={assessmentLoading}
+                      className="w-full"
+                    >
+                      {assessmentLoading ? (
+                        <>
+                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                          Generating Assessment...
+                        </>
+                      ) : (
+                        <>
+                          <Brain className="w-4 h-4 mr-2" />
+                          Generate Assessment
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                </DialogContent>
+              </Dialog>
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
       {/* User's Bookings */}
       {userBookings.length > 0 && (
@@ -331,6 +454,18 @@ export function ConsultingServices() {
                   </span>
                 </div>
               </div>
+
+              {/* AI Recommendation Badge */}
+              {aiAssessment?.ai_recommendations?.toolRecommendations?.some((tool: string) => 
+                tool.toLowerCase().includes(service.service_name.toLowerCase().split(' ')[0])
+              ) && (
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                  <div className="flex items-center">
+                    <TrendingUp className="w-4 h-4 text-blue-600 mr-2" />
+                    <span className="text-sm font-medium text-blue-800">AI Recommended</span>
+                  </div>
+                </div>
+              )}
 
               {/* Action Button */}
               <Button 
