@@ -19,29 +19,38 @@ export function RecommendedTools() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    console.log('RecommendedTools useEffect triggered, user:', user?.id);
     if (user) {
       loadRecommendations();
     }
   }, [user]);
+
+  // Force a refresh on component mount
+  useEffect(() => {
+    console.log('RecommendedTools component mounted');
+  }, []);
 
   const loadRecommendations = async () => {
     if (!user) return;
     
     setLoading(true);
     try {
+      console.log('Loading recommendations for user:', user.id);
+      
       // Get user profile first
       let profile;
       if (user.id === '550e8400-e29b-41d4-a716-446655440000') {
         // Mock profile for test user
         profile = {
-          role: 'manager',
-          industry: 'technology',
-          company_size: 'startup',
-          ai_experience: 'chatgpt',
-          goals: ['Increase personal productivity', 'Improve team efficiency'],
-          time_availability: 'few_hours_week',
-          implementation_timeline: 'This month'
+          role: 'CFO / Finance Manager',
+          industry: 'Manufacturing',
+          company_size: 'Enterprise (200+ people)',
+          ai_experience: 'basic',
+          goals: ['Increase productivity and efficiency', 'Improve decision making', 'Automate repetitive tasks'],
+          time_availability: '15-30 minutes daily',
+          implementation_timeline: 'This week (immediate impact)'
         };
+        console.log('Using mock CFO profile:', profile);
       } else {
         const { data } = await supabase
           .from('profiles')
@@ -49,15 +58,19 @@ export function RecommendedTools() {
           .eq('user_id', user.id)
           .maybeSingle();
         profile = data;
+        console.log('Loaded user profile from database:', profile);
       }
 
       if (!profile) {
+        console.log('No profile found, redirecting to assessment');
         setLoading(false);
         return;
       }
 
+      console.log('Calling recommendation engine with profile:', profile);
       // Generate fresh recommendations using the recommendation engine
       const newRecommendations = await RecommendationEngine.generateRecommendations(user.id, profile);
+      console.log('Generated recommendations:', newRecommendations);
       setRecommendations(newRecommendations);
     } catch (error) {
       console.error('Error loading recommendations:', error);

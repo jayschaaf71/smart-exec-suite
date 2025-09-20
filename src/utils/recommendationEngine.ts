@@ -48,20 +48,36 @@ export class RecommendationEngine {
 
     console.log('Calculating score for tool:', tool.name, 'with profile role:', profile.role);
 
-    // Role Match (40% weight)
-    if (tool.target_roles?.includes(profile.role.toLowerCase())) {
+    // Role Match (40% weight) - Enhanced role mapping
+    const normalizedRole = this.normalizeRole(profile.role);
+    const roleMatches = tool.target_roles?.some(targetRole => {
+      const normalizedTargetRole = targetRole.toLowerCase();
+      return normalizedRole.includes(normalizedTargetRole) || 
+             normalizedTargetRole === normalizedRole ||
+             (normalizedRole === 'cfo' && normalizedTargetRole === 'finance') ||
+             (normalizedRole === 'finance' && normalizedTargetRole === 'cfo');
+    });
+
+    if (roleMatches) {
       score += 40;
-      console.log('Role match:', profile.role, 'in', tool.target_roles);
-    } else if (tool.target_roles?.includes('all') || !tool.target_roles?.length) {
+      console.log('Role match:', profile.role, 'normalized to:', normalizedRole, 'matches tool targets:', tool.target_roles);
+    } else if (tool.target_roles?.includes('all') || tool.target_roles?.includes('individual') || !tool.target_roles?.length) {
       score += 20; // Generic tools get partial score
       console.log('Generic role match');
     }
 
-    // Industry Relevance (25% weight)
-    const industryLower = profile.industry?.toLowerCase();
-    if (tool.target_industries?.some(industry => industry.toLowerCase().includes(industryLower))) {
+    // Industry Relevance (25% weight) - Enhanced industry matching
+    const normalizedIndustry = this.normalizeIndustry(profile.industry);
+    const industryMatches = tool.target_industries?.some(targetIndustry => {
+      const normalizedTargetIndustry = targetIndustry.toLowerCase();
+      return normalizedIndustry.includes(normalizedTargetIndustry) || 
+             normalizedTargetIndustry.includes(normalizedIndustry) ||
+             this.areRelatedIndustries(normalizedIndustry, normalizedTargetIndustry);
+    });
+
+    if (industryMatches) {
       score += 25;
-      console.log('Industry match:', profile.industry, 'with', tool.target_industries);
+      console.log('Industry match:', profile.industry, 'normalized to:', normalizedIndustry, 'matches tool targets:', tool.target_industries);
     } else if (tool.target_industries?.includes('all') || !tool.target_industries?.length) {
       score += 12; // Generic tools get partial score
       console.log('Generic industry match');
@@ -96,6 +112,43 @@ export class RecommendationEngine {
 
     console.log('Final score for', tool.name, ':', Math.min(100, Math.max(0, score)));
     return Math.min(100, Math.max(0, score));
+  }
+
+  private static normalizeRole(role: string): string {
+    const roleLower = role.toLowerCase();
+    if (roleLower.includes('cfo') || roleLower.includes('finance')) return 'cfo';
+    if (roleLower.includes('ceo')) return 'ceo';
+    if (roleLower.includes('cto')) return 'cto';
+    if (roleLower.includes('cmo')) return 'cmo';
+    if (roleLower.includes('coo')) return 'coo';
+    if (roleLower.includes('vp') || roleLower.includes('vice president')) return 'vp';
+    if (roleLower.includes('director')) return 'director';
+    if (roleLower.includes('manager')) return 'manager';
+    return 'individual';
+  }
+
+  private static normalizeIndustry(industry: string): string {
+    const industryLower = industry.toLowerCase();
+    if (industryLower.includes('tech') || industryLower.includes('software')) return 'technology';
+    if (industryLower.includes('healthcare') || industryLower.includes('medical')) return 'healthcare';
+    if (industryLower.includes('finance') || industryLower.includes('banking')) return 'finance';
+    if (industryLower.includes('manufacturing')) return 'manufacturing';
+    if (industryLower.includes('education')) return 'education';
+    if (industryLower.includes('professional services')) return 'professional services';
+    return industryLower;
+  }
+
+  private static areRelatedIndustries(industry1: string, industry2: string): boolean {
+    const relatedGroups = [
+      ['finance', 'banking', 'fintech'],
+      ['technology', 'software', 'tech'],
+      ['healthcare', 'medical', 'pharma'],
+      ['manufacturing', 'industrial', 'automotive']
+    ];
+    
+    return relatedGroups.some(group => 
+      group.includes(industry1) && group.includes(industry2)
+    );
   }
 
   private static getExperienceBonus(tool: AITool, experience: string): number {
@@ -142,22 +195,39 @@ export class RecommendationEngine {
   static generateRecommendationReason(tool: AITool, profile: UserProfile, score: number): string {
     const reasons = [];
 
-    if (tool.target_roles?.includes(profile.role)) {
+    const normalizedRole = this.normalizeRole(profile.role);
+    const roleMatches = tool.target_roles?.some(targetRole => {
+      const normalizedTargetRole = targetRole.toLowerCase();
+      return normalizedRole.includes(normalizedTargetRole) || 
+             normalizedTargetRole === normalizedRole ||
+             (normalizedRole === 'cfo' && normalizedTargetRole === 'finance') ||
+             (normalizedRole === 'finance' && normalizedTargetRole === 'cfo');
+    });
+
+    if (roleMatches) {
       const roleNames = {
         'ceo': 'CEOs',
         'cto': 'CTOs', 
         'cmo': 'CMOs',
         'coo': 'COOs',
-        'cfo': 'CFOs',
+        'cfo': 'CFOs and Finance Managers',
         'vp': 'VPs',
         'director': 'Directors',
         'manager': 'Managers',
         'individual': 'Individual Contributors'
       };
-      reasons.push(`Specifically designed for ${roleNames[profile.role] || profile.role}`);
+      reasons.push(`Specifically designed for ${roleNames[normalizedRole] || profile.role}`);
     }
 
-    if (tool.target_industries?.includes(profile.industry)) {
+    const normalizedIndustry = this.normalizeIndustry(profile.industry);
+    const industryMatches = tool.target_industries?.some(targetIndustry => {
+      const normalizedTargetIndustry = targetIndustry.toLowerCase();
+      return normalizedIndustry.includes(normalizedTargetIndustry) || 
+             normalizedTargetIndustry.includes(normalizedIndustry) ||
+             this.areRelatedIndustries(normalizedIndustry, normalizedTargetIndustry);
+    });
+
+    if (industryMatches) {
       reasons.push(`Proven success in ${profile.industry}`);
     }
 
