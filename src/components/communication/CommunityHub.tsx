@@ -32,9 +32,9 @@ interface CommunityMessage {
   replies_count: number;
   created_at: string;
   profiles?: {
-    display_name: string;
-    role: string;
-  };
+    display_name: string | null;
+    role: string | null;
+  } | null;
 }
 
 const COMMUNITY_CATEGORIES = [
@@ -113,23 +113,46 @@ export function CommunityHub() {
 
   const loadMessages = async (communityId: string) => {
     try {
-      const { data: messagesData, error } = await supabase
+      // Get messages first
+      const { data: messagesData, error: messagesError } = await supabase
         .from('community_messages')
-        .select(`
-          *,
-          profiles!inner(display_name, role)
-        `)
+        .select('*')
         .eq('community_id', communityId)
         .is('parent_message_id', null)
         .order('created_at', { ascending: false })
         .limit(20);
 
-      if (error) throw error;
+      if (messagesError) throw messagesError;
+
+      if (!messagesData || messagesData.length === 0) {
+        setMessages([]);
+        return;
+      }
+
+      // Get author profiles separately
+      const authorIds = [...new Set(messagesData.map(msg => msg.author_id))];
+      const { data: profilesData } = await supabase
+        .from('profiles')
+        .select('user_id, display_name, role')
+        .in('user_id', authorIds);
+
+      // Create a map for quick profile lookup
+      const profilesMap = new Map();
+      profilesData?.forEach(profile => {
+        profilesMap.set(profile.user_id, profile);
+      });
       
-      // Type assertion for message data
-      const typedMessagesData = (messagesData || []).map(msg => ({
-        ...msg,
-        message_type: msg.message_type as 'discussion' | 'question' | 'announcement'
+      // Combine data with proper typing
+      const typedMessagesData: CommunityMessage[] = messagesData.map(msg => ({
+        id: msg.id,
+        community_id: msg.community_id,
+        author_id: msg.author_id,
+        content: msg.content,
+        message_type: msg.message_type as 'discussion' | 'question' | 'announcement',
+        likes_count: msg.likes_count || 0,
+        replies_count: msg.replies_count || 0,
+        created_at: msg.created_at,
+        profiles: profilesMap.get(msg.author_id) || null
       }));
       
       setMessages(typedMessagesData);
@@ -151,18 +174,29 @@ export function CommunityHub() {
           content: newMessage,
           message_type: messageType
         })
-        .select(`
-          *,
-          profiles!inner(display_name, role)
-        `)
+        .select('*')
         .single();
 
       if (error) throw error;
 
-      // Type the response data correctly
-      const typedData = {
-        ...data,
-        message_type: data.message_type as 'discussion' | 'question' | 'announcement'
+      // Get user profile for the new message
+      const { data: profileData } = await supabase
+        .from('profiles')
+        .select('display_name, role')
+        .eq('user_id', user.id)
+        .single();
+
+      // Create typed message with profile data
+      const typedData: CommunityMessage = {
+        id: data.id,
+        community_id: data.community_id,
+        author_id: data.author_id,
+        content: data.content,
+        message_type: data.message_type as 'discussion' | 'question' | 'announcement',
+        likes_count: data.likes_count || 0,
+        replies_count: data.replies_count || 0,
+        created_at: data.created_at,
+        profiles: profileData || null
       };
 
       // Add to local state for immediate UI update
