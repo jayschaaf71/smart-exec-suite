@@ -10,6 +10,8 @@ import { CFOToolRecommendations } from './CFOToolRecommendations';
 import { ImplementationWizard } from './ImplementationWizard';
 import { ROICalculator } from './ROICalculator';
 import { SuccessMetrics } from './SuccessMetrics';
+import { CFOAssessment } from './CFOAssessment';
+import { useToast } from '@/hooks/use-toast';
 import { TrendingUp, Clock, Target, DollarSign, AlertCircle, CheckCircle } from 'lucide-react';
 
 interface CFODashboardData {
@@ -21,6 +23,7 @@ interface CFODashboardData {
 
 export function CFODashboard() {
   const { user } = useAuth();
+  const { toast } = useToast();
   const [data, setData] = useState<CFODashboardData>({
     assessment: null,
     recommendations: [],
@@ -29,12 +32,34 @@ export function CFODashboard() {
   });
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('overview');
+  const [showAssessment, setShowAssessment] = useState(false);
+  const [aiAssessment, setAiAssessment] = useState<any>(null);
 
   useEffect(() => {
     if (user) {
       loadDashboardData();
+      loadAIAssessment();
     }
   }, [user]);
+
+  const loadAIAssessment = async () => {
+    if (!user) return;
+    
+    try {
+      const { data: assessmentData } = await supabase
+        .from('ai_assessments')
+        .select('*')
+        .eq('user_id', user.id)
+        .eq('assessment_type', 'cfo')
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+        
+      setAiAssessment(assessmentData);
+    } catch (error) {
+      console.error('Error loading AI assessment:', error);
+    }
+  };
 
   const loadDashboardData = async () => {
     if (!user) return;
@@ -98,6 +123,45 @@ export function CFODashboard() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleAssessmentComplete = async (assessmentData: any) => {
+    setData(prev => ({ ...prev, assessment: assessmentData }));
+    setShowAssessment(false);
+    
+    // Generate AI assessment after CFO assessment is complete
+    try {
+      const { data: aiData, error } = await supabase.functions.invoke('ai-assessment', {
+        body: {
+          assessmentType: 'cfo',
+          userProfile: {
+            role: 'CFO',
+            industry: assessmentData.companyProfile.industry,
+            companySize: assessmentData.companyProfile.employees,
+            currentStack: assessmentData.currentStack,
+            painPoints: assessmentData.painPoints,
+            goals: assessmentData.goals
+          }
+        }
+      });
+
+      if (error) throw error;
+      
+      setAiAssessment(aiData.assessment);
+      toast({
+        title: "AI Assessment Complete!",
+        description: "Your personalized CFO recommendations are ready.",
+      });
+    } catch (error) {
+      console.error('Error generating AI assessment:', error);
+      toast({
+        title: "Assessment Complete!",
+        description: "Your CFO recommendations have been updated.",
+      });
+    }
+    
+    // Reload dashboard data
+    loadDashboardData();
   };
 
   const getProgressStats = () => {
@@ -179,6 +243,14 @@ export function CFODashboard() {
     );
   }
 
+  if (showAssessment) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <CFOAssessment onComplete={handleAssessmentComplete} />
+      </div>
+    );
+  }
+
   if (!data.assessment) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/5 to-secondary/10 p-4">
@@ -190,7 +262,7 @@ export function CFODashboard() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Button onClick={() => window.location.href = '/assessment'} className="w-full">
+            <Button onClick={() => setShowAssessment(true)} className="w-full">
               Start CFO Assessment
             </Button>
           </CardContent>
