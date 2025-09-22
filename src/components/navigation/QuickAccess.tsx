@@ -57,16 +57,18 @@ export function QuickAccess() {
               <Button
                 key={feature.path}
                 variant="ghost"
-                className="h-auto p-4 justify-start hover:bg-accent transition-colors cursor-pointer border border-transparent hover:border-accent-foreground/20"
+                className="h-auto p-3 justify-start hover:bg-accent/50 transition-colors cursor-pointer border border-transparent hover:border-border"
                 onClick={() => navigate(feature.path)}
               >
-                <div className={`p-2 rounded-lg ${feature.bgColor} mr-3 flex-shrink-0`}>
-                  <IconComponent className={`w-5 h-5 ${feature.color}`} />
-                </div>
-                <div className="text-left flex-1">
-                  <div className="font-medium text-sm text-foreground">{feature.title}</div>
-                  <div className="text-xs text-muted-foreground line-clamp-2">
-                    {feature.description}
+                <div className="flex items-start gap-3 w-full">
+                  <div className={`p-2 rounded-lg ${feature.bgColor} flex-shrink-0`}>
+                    <IconComponent className={`w-4 h-4 ${feature.color}`} />
+                  </div>
+                  <div className="text-left flex-1 min-w-0">
+                    <div className="font-medium text-sm text-foreground mb-1">{feature.title}</div>
+                    <div className="text-xs text-muted-foreground leading-relaxed">
+                      {feature.description}
+                    </div>
                   </div>
                 </div>
               </Button>
