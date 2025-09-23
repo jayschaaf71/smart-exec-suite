@@ -11,6 +11,7 @@ import { ImplementationWizard } from './ImplementationWizard';
 import { ROICalculator } from './ROICalculator';
 import { SuccessMetrics } from './SuccessMetrics';
 import { CFOAssessment } from './CFOAssessment';
+import { EnhancedRecommendations } from '@/components/recommendations/EnhancedRecommendations';
 import { useToast } from '@/hooks/use-toast';
 import { TrendingUp, Clock, Target, DollarSign, AlertCircle, CheckCircle } from 'lucide-react';
 
@@ -437,10 +438,16 @@ export function CFODashboard() {
           </TabsContent>
 
           <TabsContent value="tools">
-            <CFOToolRecommendations 
-              recommendations={data.recommendations}
-              onRefresh={loadDashboardData}
-            />
+            <div className="space-y-6">
+              <EnhancedRecommendations 
+                assessmentType="cfo" 
+                maxRecommendations={8}
+              />
+              <CFOToolRecommendations 
+                recommendations={data.recommendations}
+                onRefresh={loadDashboardData}
+              />
+            </div>
           </TabsContent>
 
           <TabsContent value="implementation">

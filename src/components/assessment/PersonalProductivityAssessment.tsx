@@ -8,6 +8,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { ArrowLeft, ArrowRight, User, Clock, Target } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 
 interface PersonalAssessmentData {
   workProfile: {
@@ -100,9 +101,56 @@ const PersonalProductivityAssessment: React.FC = () => {
     }
   };
 
-  const handleSubmit = () => {
-    console.log('Personal Assessment Data:', assessmentData);
-    // TODO: Submit to backend
+  const handleSubmit = async () => {
+    try {
+      const { data: userData } = await supabase.auth.getUser();
+      if (!userData.user) return;
+
+      // Convert assessment data to profile format
+      const profile = {
+        role: 'Individual Contributor',
+        industry: 'technology', // Default, could be enhanced
+        company_size: 'medium', // Default, could be enhanced
+        ai_experience: assessmentData.currentAIUsage.toolsUsed.includes('None') ? 'never' : 'multiple',
+        goals: assessmentData.productivityChallenges.insightNeeds,
+        time_availability: assessmentData.implementation.timeAvailable,
+        implementation_timeline: assessmentData.successMetrics.timeline,
+        primary_focus_areas: assessmentData.workProfile.communicationPatterns,
+        display_name: 'Personal Productivity User'
+      };
+
+      // Save assessment data to AI assessments table
+      const { error: assessmentError } = await supabase
+        .from('ai_assessments')
+        .insert({
+          user_id: userData.user.id,
+          assessment_type: 'personal_productivity',
+          assessment_data: assessmentData as any,
+          ai_recommendations: {},
+          status: 'completed'
+        });
+
+      if (assessmentError) throw assessmentError;
+
+      // Update user profile with enhanced data
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .upsert({
+          user_id: userData.user.id,
+          ...profile
+        });
+
+      if (profileError) throw profileError;
+
+      console.log('Personal Assessment Complete:', assessmentData);
+      alert('Assessment completed successfully! Your personalized recommendations are being generated.');
+      
+      // Redirect to dashboard
+      window.location.href = '/dashboard';
+    } catch (error) {
+      console.error('Error submitting assessment:', error);
+      alert('Error submitting assessment. Please try again.');
+    }
   };
 
   const renderWorkProfile = () => (

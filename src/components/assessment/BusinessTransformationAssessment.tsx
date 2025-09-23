@@ -8,6 +8,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { ArrowLeft, ArrowRight, Building, Cog, Users, Target, BarChart } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 
 interface BusinessAssessmentData {
   businessContext: {
@@ -102,9 +103,56 @@ const BusinessTransformationAssessment: React.FC = () => {
     }
   };
 
-  const handleSubmit = () => {
-    console.log('Business Assessment Data:', assessmentData);
-    // TODO: Submit to backend
+  const handleSubmit = async () => {
+    try {
+      const { data: userData } = await supabase.auth.getUser();
+      if (!userData.user) return;
+
+      // Convert assessment data to profile format using correct property structure
+      const profile = {
+        role: 'Business Leader',
+        industry: assessmentData.businessContext.industry,
+        company_size: assessmentData.businessContext.companySize,
+        ai_experience: assessmentData.currentState.aiToolsInUse.length > 0 ? 'multiple' : 'never',
+        goals: assessmentData.strategicObjectives.competitiveAdvantages,
+        time_availability: assessmentData.organizationalReadiness.implementationTimeline,
+        implementation_timeline: assessmentData.organizationalReadiness.implementationTimeline,
+        primary_focus_areas: assessmentData.processAnalysis.manualEffortAreas,
+        display_name: 'Business Transformation Lead'
+      };
+
+      // Save assessment data to AI assessments table
+      const { error: assessmentError } = await supabase
+        .from('ai_assessments')
+        .insert({
+          user_id: userData.user.id,
+          assessment_type: 'business_transformation',
+          assessment_data: assessmentData as any,
+          ai_recommendations: {},
+          status: 'completed'
+        });
+
+      if (assessmentError) throw assessmentError;
+
+      // Update user profile with enhanced data
+      const { error: profileError } = await supabase
+        .from('profiles')
+        .upsert({
+          user_id: userData.user.id,
+          ...profile
+        });
+
+      if (profileError) throw profileError;
+
+      console.log('Business Assessment Complete:', assessmentData);
+      alert('Assessment completed successfully! Your personalized recommendations are being generated.');
+      
+      // Redirect to dashboard
+      window.location.href = '/dashboard';
+    } catch (error) {
+      console.error('Error submitting assessment:', error);
+      alert('Error submitting assessment. Please try again.');
+    }
   };
 
   const renderBusinessContext = () => (
