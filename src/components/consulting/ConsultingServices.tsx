@@ -311,7 +311,7 @@ export function ConsultingServices() {
                 </DialogTrigger>
                 <DialogContent className="max-w-md">
                   <DialogHeader>
-                    <DialogTitle>AI Consulting Assessment</DialogTitle>
+                    <DialogTitle>AI Automation Assessment</DialogTitle>
                   </DialogHeader>
                   <div className="space-y-4">
                     <p className="text-sm text-muted-foreground">
