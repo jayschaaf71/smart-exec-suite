@@ -86,6 +86,90 @@ export type Database = {
         }
         Relationships: []
       }
+      board_presentations: {
+        Row: {
+          chart_configurations: Json | null
+          created_at: string
+          executive_summary: string | null
+          id: string
+          key_insights: Json | null
+          presentation_date: string
+          presentation_status: string | null
+          presentation_title: string
+          slides_data: Json
+          talking_points: Json | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          chart_configurations?: Json | null
+          created_at?: string
+          executive_summary?: string | null
+          id?: string
+          key_insights?: Json | null
+          presentation_date: string
+          presentation_status?: string | null
+          presentation_title: string
+          slides_data?: Json
+          talking_points?: Json | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          chart_configurations?: Json | null
+          created_at?: string
+          executive_summary?: string | null
+          id?: string
+          key_insights?: Json | null
+          presentation_date?: string
+          presentation_status?: string | null
+          presentation_title?: string
+          slides_data?: Json
+          talking_points?: Json | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      cash_flow_predictions: {
+        Row: {
+          ai_analysis: string | null
+          confidence_intervals: Json | null
+          created_at: string
+          id: string
+          key_assumptions: Json | null
+          predicted_cash_flow: Json
+          prediction_date: string
+          scenario_name: string | null
+          user_id: string
+          weeks_ahead: number
+        }
+        Insert: {
+          ai_analysis?: string | null
+          confidence_intervals?: Json | null
+          created_at?: string
+          id?: string
+          key_assumptions?: Json | null
+          predicted_cash_flow?: Json
+          prediction_date: string
+          scenario_name?: string | null
+          user_id: string
+          weeks_ahead?: number
+        }
+        Update: {
+          ai_analysis?: string | null
+          confidence_intervals?: Json | null
+          created_at?: string
+          id?: string
+          key_assumptions?: Json | null
+          predicted_cash_flow?: Json
+          prediction_date?: string
+          scenario_name?: string | null
+          user_id?: string
+          weeks_ahead?: number
+        }
+        Relationships: []
+      }
       categories: {
         Row: {
           color: string | null
@@ -418,6 +502,129 @@ export type Database = {
           title?: string
           updated_at?: string
           url?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      financial_anomalies: {
+        Row: {
+          affected_accounts: Json | null
+          ai_explanation: string | null
+          anomaly_score: number
+          anomaly_type: string
+          created_at: string
+          description: string
+          detected_date: string
+          id: string
+          investigation_status: string | null
+          resolution_notes: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          affected_accounts?: Json | null
+          ai_explanation?: string | null
+          anomaly_score: number
+          anomaly_type: string
+          created_at?: string
+          description: string
+          detected_date: string
+          id?: string
+          investigation_status?: string | null
+          resolution_notes?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          affected_accounts?: Json | null
+          ai_explanation?: string | null
+          anomaly_score?: number
+          anomaly_type?: string
+          created_at?: string
+          description?: string
+          detected_date?: string
+          id?: string
+          investigation_status?: string | null
+          resolution_notes?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      financial_data: {
+        Row: {
+          created_at: string
+          data_entries: Json
+          data_type: string
+          id: string
+          period_end: string
+          period_start: string
+          period_type: string
+          updated_at: string
+          upload_source: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          data_entries?: Json
+          data_type: string
+          id?: string
+          period_end: string
+          period_start: string
+          period_type: string
+          updated_at?: string
+          upload_source?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          data_entries?: Json
+          data_type?: string
+          id?: string
+          period_end?: string
+          period_start?: string
+          period_type?: string
+          updated_at?: string
+          upload_source?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      financial_scenarios: {
+        Row: {
+          ai_insights: string | null
+          assumptions: Json
+          created_at: string
+          id: string
+          key_metrics: Json | null
+          projections: Json
+          scenario_name: string
+          scenario_type: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          ai_insights?: string | null
+          assumptions?: Json
+          created_at?: string
+          id?: string
+          key_metrics?: Json | null
+          projections?: Json
+          scenario_name: string
+          scenario_type: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          ai_insights?: string | null
+          assumptions?: Json
+          created_at?: string
+          id?: string
+          key_metrics?: Json | null
+          projections?: Json
+          scenario_name?: string
+          scenario_type?: string
+          updated_at?: string
           user_id?: string
         }
         Relationships: []
@@ -1686,6 +1893,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      variance_analysis: {
+        Row: {
+          ai_insights: string
+          analysis_period: string
+          budget_vs_actual: Json
+          created_at: string
+          id: string
+          key_variances: Json
+          recommendations: Json | null
+          severity_score: number | null
+          user_id: string
+        }
+        Insert: {
+          ai_insights: string
+          analysis_period: string
+          budget_vs_actual?: Json
+          created_at?: string
+          id?: string
+          key_variances?: Json
+          recommendations?: Json | null
+          severity_score?: number | null
+          user_id: string
+        }
+        Update: {
+          ai_insights?: string
+          analysis_period?: string
+          budget_vs_actual?: Json
+          created_at?: string
+          id?: string
+          key_variances?: Json
+          recommendations?: Json | null
+          severity_score?: number | null
+          user_id?: string
+        }
+        Relationships: []
       }
     }
     Views: {
