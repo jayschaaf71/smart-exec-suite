@@ -797,6 +797,132 @@ export type Database = {
           },
         ]
       }
+      success_case_studies: {
+        Row: {
+          challenge_description: string
+          company_name: string
+          company_size: string | null
+          cost_savings_annual: number | null
+          created_at: string
+          id: string
+          implementation_timeline: string | null
+          industry: string
+          is_featured: boolean | null
+          is_public: boolean | null
+          results_data: Json
+          revenue_range: string | null
+          roi_percentage: number | null
+          solution_summary: string
+          testimonial: Json | null
+          time_saved_monthly: number | null
+          tools_used: string[] | null
+          updated_at: string
+        }
+        Insert: {
+          challenge_description: string
+          company_name: string
+          company_size?: string | null
+          cost_savings_annual?: number | null
+          created_at?: string
+          id?: string
+          implementation_timeline?: string | null
+          industry: string
+          is_featured?: boolean | null
+          is_public?: boolean | null
+          results_data?: Json
+          revenue_range?: string | null
+          roi_percentage?: number | null
+          solution_summary: string
+          testimonial?: Json | null
+          time_saved_monthly?: number | null
+          tools_used?: string[] | null
+          updated_at?: string
+        }
+        Update: {
+          challenge_description?: string
+          company_name?: string
+          company_size?: string | null
+          cost_savings_annual?: number | null
+          created_at?: string
+          id?: string
+          implementation_timeline?: string | null
+          industry?: string
+          is_featured?: boolean | null
+          is_public?: boolean | null
+          results_data?: Json
+          revenue_range?: string | null
+          roi_percentage?: number | null
+          solution_summary?: string
+          testimonial?: Json | null
+          time_saved_monthly?: number | null
+          tools_used?: string[] | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      template_library: {
+        Row: {
+          category: string
+          created_at: string
+          created_by: string | null
+          description: string
+          difficulty_level: string
+          download_count: number | null
+          download_url: string | null
+          file_size: string | null
+          file_type: string
+          id: string
+          is_active: boolean | null
+          is_featured: boolean | null
+          name: string
+          preview_url: string | null
+          rating: number | null
+          tags: string[] | null
+          target_industries: string[] | null
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          created_by?: string | null
+          description: string
+          difficulty_level?: string
+          download_count?: number | null
+          download_url?: string | null
+          file_size?: string | null
+          file_type?: string
+          id?: string
+          is_active?: boolean | null
+          is_featured?: boolean | null
+          name: string
+          preview_url?: string | null
+          rating?: number | null
+          tags?: string[] | null
+          target_industries?: string[] | null
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string
+          difficulty_level?: string
+          download_count?: number | null
+          download_url?: string | null
+          file_size?: string | null
+          file_type?: string
+          id?: string
+          is_active?: boolean | null
+          is_featured?: boolean | null
+          name?: string
+          preview_url?: string | null
+          rating?: number | null
+          tags?: string[] | null
+          target_industries?: string[] | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       tool_effectiveness_metrics: {
         Row: {
           calculated_at: string
@@ -934,6 +1060,7 @@ export type Database = {
           features: string[] | null
           id: string
           implementation_guide: string | null
+          industry_specific_score: Json | null
           integrations: string[] | null
           is_quick_win: boolean | null
           logo_url: string | null
@@ -942,8 +1069,10 @@ export type Database = {
           pricing_amount: number | null
           pricing_model: string | null
           pros: string[] | null
+          setup_complexity_score: number | null
           setup_difficulty: string | null
           setup_time: string | null
+          setup_time_estimate_weeks: number | null
           status: string | null
           target_company_sizes: string[] | null
           target_industries: string[] | null
@@ -963,6 +1092,7 @@ export type Database = {
           features?: string[] | null
           id?: string
           implementation_guide?: string | null
+          industry_specific_score?: Json | null
           integrations?: string[] | null
           is_quick_win?: boolean | null
           logo_url?: string | null
@@ -971,8 +1101,10 @@ export type Database = {
           pricing_amount?: number | null
           pricing_model?: string | null
           pros?: string[] | null
+          setup_complexity_score?: number | null
           setup_difficulty?: string | null
           setup_time?: string | null
+          setup_time_estimate_weeks?: number | null
           status?: string | null
           target_company_sizes?: string[] | null
           target_industries?: string[] | null
@@ -992,6 +1124,7 @@ export type Database = {
           features?: string[] | null
           id?: string
           implementation_guide?: string | null
+          industry_specific_score?: Json | null
           integrations?: string[] | null
           is_quick_win?: boolean | null
           logo_url?: string | null
@@ -1000,8 +1133,10 @@ export type Database = {
           pricing_amount?: number | null
           pricing_model?: string | null
           pros?: string[] | null
+          setup_complexity_score?: number | null
           setup_difficulty?: string | null
           setup_time?: string | null
+          setup_time_estimate_weeks?: number | null
           status?: string | null
           target_company_sizes?: string[] | null
           target_industries?: string[] | null
