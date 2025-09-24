@@ -140,6 +140,9 @@ const BusinessTransformationAssessment: React.FC = () => {
         .upsert({
           user_id: userData.user.id,
           ...profile
+        }, {
+          onConflict: 'user_id',
+          ignoreDuplicates: false
         });
 
       if (profileError) throw profileError;
