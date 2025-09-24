@@ -80,7 +80,7 @@ export function BoardPresentationGenerator() {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setPresentations((data || []) as BoardPresentation[]);
+      setPresentations((data || []) as unknown as BoardPresentation[]);
     } catch (error) {
       console.error('Error loading presentations:', error);
       toast({

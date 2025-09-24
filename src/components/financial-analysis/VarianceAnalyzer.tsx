@@ -71,7 +71,7 @@ export function VarianceAnalyzer() {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setAnalyses((data || []) as VarianceAnalysis[]);
+      setAnalyses((data || []) as unknown as VarianceAnalysis[]);
     } catch (error) {
       console.error('Error loading variance analyses:', error);
       toast({

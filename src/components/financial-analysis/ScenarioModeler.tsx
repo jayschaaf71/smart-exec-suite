@@ -94,7 +94,7 @@ export function ScenarioModeler() {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setScenarios((data || []) as FinancialScenario[]);
+      setScenarios((data || []) as unknown as FinancialScenario[]);
     } catch (error) {
       console.error('Error loading scenarios:', error);
       toast({
@@ -268,7 +268,7 @@ export function ScenarioModeler() {
             expense_growth: parseFloat(expenseGrowth),
             market_conditions: marketConditions,
             assumptions_list: assumptionsList
-          },
+          } as any,
           projections: {
             quarterly_revenue: quarterlyRevenue,
             quarterly_expenses: quarterlyExpenses,
@@ -279,12 +279,12 @@ export function ScenarioModeler() {
               net_profit: netProfit,
               profit_margin: profitMargin
             }
-          },
+          } as any,
           key_metrics: {
             metrics: keyMetrics,
             risk_factors: riskFactors,
             opportunities: opportunities
-          },
+          } as any,
           ai_insights: aiResponse.response
         });
 

@@ -73,7 +73,7 @@ export function CashFlowPredictor() {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setPredictions((data || []) as CashFlowPrediction[]);
+      setPredictions((data || []) as unknown as CashFlowPrediction[]);
     } catch (error) {
       console.error('Error loading cash flow predictions:', error);
       toast({
